@@ -29,10 +29,16 @@ jobs:
 
       - name: Sign APK with debug key
         run: |
+          # Generate a keystore for signing (CI runners don't have ~/.android/debug.keystore)
+          keytool -genkey -v -keystore /tmp/debug.keystore \
+            -storepass android -alias androiddebugkey \
+            -keypass android -keyalg RSA -keysize 2048 \
+            -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
+
           APKSIGNER=$(ls $ANDROID_SDK_ROOT/build-tools/*/apksigner | head -1)
           echo "Using apksigner: $APKSIGNER"
           $APKSIGNER sign \
-            --ks ~/.android/debug.keystore \
+            --ks /tmp/debug.keystore \
             --ks-pass pass:android \
             --ks-key-alias androiddebugkey \
             app/build/outputs/apk/release/app-release-unsigned.apk
