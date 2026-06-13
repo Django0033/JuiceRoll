@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -114,7 +115,6 @@ fun HomeScreen(
     }
 
     Scaffold(
-        contentWindowInsets = WindowInsets.systemBars,
         topBar = {
             TopAppBar(
                 title = {
@@ -152,6 +152,7 @@ fun HomeScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .windowInsetsPadding(WindowInsets.systemBars)
                 .padding(paddingValues)
                 .verticalScroll(rememberScrollState()),
         ) {
