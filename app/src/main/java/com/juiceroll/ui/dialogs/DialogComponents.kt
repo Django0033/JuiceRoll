@@ -1,7 +1,6 @@
 package com.juiceroll.ui.dialogs
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -16,7 +15,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import com.juiceroll.domain.model.RollResult
 import com.juiceroll.ui.display.ResultDisplay
 import com.juiceroll.ui.theme.Parchment
@@ -45,10 +44,11 @@ import com.juiceroll.ui.theme.CardSurface
 /**
  * Wrapper for oracle dialogs with icon header.
  *
- * Provides a consistent AlertDialog structure with:
+ * Provides a consistent dialog structure with:
  * - Icon in a tinted container + title row
  * - Scrollable content area
  * - Cancel button by default
+ * - Reduced horizontal margins for more content space
  */
 @Composable
 fun OracleDialog(
@@ -58,57 +58,74 @@ fun OracleDialog(
     onDismissRequest: () -> Unit,
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    AlertDialog(
-        onDismissRequest = onDismissRequest,
-        title = {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                // Icon container
-                Surface(
-                    shape = RoundedCornerShape(8.dp),
-                    color = accentColor.copy(alpha = 0.2f),
-                    tonalElevation = 0.dp,
+    Dialog(onDismissRequest = onDismissRequest) {
+        Surface(
+            shape = RoundedCornerShape(16.dp),
+            color = Surface,
+            tonalElevation = 0.dp,
+        ) {
+            Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 20.dp)) {
+                // Title row: icon + title + close
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Box(modifier = Modifier.padding(6.dp)) {
+                    Surface(
+                        shape = RoundedCornerShape(8.dp),
+                        color = accentColor.copy(alpha = 0.2f),
+                        tonalElevation = 0.dp,
+                    ) {
+                        Box(modifier = Modifier.padding(8.dp)) {
+                            Icon(
+                                imageVector = icon,
+                                contentDescription = null,
+                                tint = accentColor,
+                                modifier = Modifier.width(22.dp),
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.titleLarge,
+                        color = Parchment,
+                        modifier = Modifier.weight(1f),
+                    )
+                    IconButton(onClick = onDismissRequest) {
                         Icon(
-                            imageVector = icon,
-                            contentDescription = null,
-                            tint = accentColor,
-                            modifier = Modifier.width(20.dp),
+                            imageVector = Icons.Filled.Close,
+                            contentDescription = "Close",
+                            tint = ParchmentDark,
                         )
                     }
                 }
-                Spacer(modifier = Modifier.width(10.dp))
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleLarge,
-                    color = Parchment,
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // Scrollable content
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .verticalScroll(rememberScrollState()),
+                    content = content,
                 )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Cancel button
+                TextButton(onClick = onDismissRequest) {
+                    Text("Cancel", color = ParchmentDark)
+                }
             }
-        },
-        text = {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .verticalScroll(rememberScrollState()),
-                content = content,
-            )
-        },
-        confirmButton = {
-            TextButton(onClick = onDismissRequest) {
-                Text("Cancel", color = ParchmentDark)
-            }
-        },
-        containerColor = Surface,
-        titleContentColor = Parchment,
-        textContentColor = Parchment.copy(alpha = 0.9f),
-        shape = RoundedCornerShape(16.dp),
-    )
+        }
+    }
 }
 
 /**
  * Simpler variant of oracle dialog without icon header.
  *
  * Used by dialogs like Challenge, PayThePrice that just need a text title.
+ * Has reduced horizontal margins for more content space.
  */
 @Composable
 fun SimpleOracleDialog(
@@ -116,33 +133,52 @@ fun SimpleOracleDialog(
     onDismissRequest: () -> Unit,
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    AlertDialog(
-        onDismissRequest = onDismissRequest,
-        title = {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleLarge,
-                color = Parchment,
-            )
-        },
-        text = {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .verticalScroll(rememberScrollState()),
-                content = content,
-            )
-        },
-        confirmButton = {
-            TextButton(onClick = onDismissRequest) {
-                Text("Cancel", color = ParchmentDark)
+    Dialog(onDismissRequest = onDismissRequest) {
+        Surface(
+            shape = RoundedCornerShape(16.dp),
+            color = Surface,
+            tonalElevation = 0.dp,
+        ) {
+            Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 20.dp)) {
+                // Title row with close
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.titleLarge,
+                        color = Parchment,
+                        modifier = Modifier.weight(1f),
+                    )
+                    IconButton(onClick = onDismissRequest) {
+                        Icon(
+                            imageVector = Icons.Filled.Close,
+                            contentDescription = "Close",
+                            tint = ParchmentDark,
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // Scrollable content
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .verticalScroll(rememberScrollState()),
+                    content = content,
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Cancel button
+                TextButton(onClick = onDismissRequest) {
+                    Text("Cancel", color = ParchmentDark)
+                }
             }
-        },
-        containerColor = Surface,
-        titleContentColor = Parchment,
-        textContentColor = Parchment.copy(alpha = 0.9f),
-        shape = RoundedCornerShape(16.dp),
-    )
+        }
+    }
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -163,7 +199,7 @@ fun SectionHeader(
     ) {
         Text(
             text = title,
-            style = MaterialTheme.typography.labelLarge,
+            style = MaterialTheme.typography.titleMedium,
             color = Gold,
         )
         Spacer(modifier = Modifier.width(8.dp))
@@ -199,8 +235,8 @@ fun DialogOption(
     ) {
         Text(
             text = text,
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
-            style = MaterialTheme.typography.labelMedium,
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
+            style = MaterialTheme.typography.titleSmall,
             color = accentColor,
         )
     }
