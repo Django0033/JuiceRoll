@@ -195,8 +195,13 @@ private fun OracleDialogHost(
     }
 
     val onDismissAndRoll: (RollResult) -> Unit = { result ->
-        viewModel.addToHistory(result)
-        onDismiss()
+        try {
+            viewModel.addToHistory(result)
+        } catch (e: Exception) {
+            android.util.Log.e("OracleDialogHost", "addToHistory failed", e)
+        } finally {
+            onDismiss()
+        }
     }
 
     when (type) {
