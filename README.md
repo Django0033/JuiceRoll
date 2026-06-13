@@ -1,4 +1,5 @@
 # JuiceRoll
+<<<<<<< HEAD
 
 **A digital companion for the [Juice Oracle](https://thunder9861.itch.io/juice-oracle), a solo RPG tool inspired by Mythic GME, Ironsworn, and classic tabletop systems.**
 
@@ -213,3 +214,6 @@ The test suite covers:
 - **[Juice Oracle](https://thunder9861.itch.io/juice-oracle)** by thunder9861 — the original oracle system
 - **[Ironsworn](https://www.ironswornrpg.com/)** by Shawn Tomkin — solo RPG mechanics
 - **[Mythic GME](https://www.mythic.wordpr.com/page14/page14.html)** by Tana Pigeon — game master emulator concepts
+=======
+A port of johnkord's Juice Roll
+>>>>>>> 9bb16f58e7152320410cf0bf099ee32edc83b4a2
