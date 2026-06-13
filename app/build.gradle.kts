@@ -52,7 +52,13 @@ android {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
-            signingConfig = signingConfigs.getByName("release")
+
+            // Only wire signing if credentials are available (local or CI)
+            val hasSigning = rootProject.file("keystore.properties").exists() ||
+                System.getenv("KEYSTORE_PASSWORD") != null
+            if (hasSigning) {
+                signingConfig = signingConfigs.getByName("release")
+            }
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
