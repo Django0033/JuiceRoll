@@ -100,6 +100,27 @@ data class ScaleResult(
     override val interpretation: String? get() = modifier
 }
 
+// ── Scaled Value Result ──
+
+@Serializable
+@SerialName("ScaledValueResult")
+data class ScaledValueResult(
+    val fateDice: List<Int>,
+    val fateSum: Int,
+    val intensity: Int,
+    override val total: Int,
+    val modifier: String,
+    val multiplier: Double,
+    val baseValue: Double,
+    val scaledValue: Double,
+    override val timestamp: Long = System.currentTimeMillis(),
+) : RollResult() {
+    override val type: RollType get() = RollType.SCALE
+    override val description: String get() = "Scaled Value"
+    override val diceResults: List<Int> get() = fateDice + intensity
+    override val interpretation: String? get() = "$baseValue → $scaledValue ($modifier)"
+}
+
 // ── Next Scene Results ──
 
 @Serializable

@@ -88,6 +88,20 @@ fun ScaleDisplay(
 }
 
 @Composable
+fun ScaledValueDisplay(
+    result: ScaledValueResult,
+    modifier: Modifier = Modifier,
+) {
+    RollResultCard(result = result, modifier = modifier) {
+        Column {
+            DetailRow(label = "Scale", value = result.modifier)
+            DetailRow(label = "Base", value = "${result.baseValue}")
+            DetailRow(label = "Scaled", value = "${result.scaledValue}")
+        }
+    }
+}
+
+@Composable
 fun NextSceneDisplay(
     result: NextSceneResult,
     modifier: Modifier = Modifier,

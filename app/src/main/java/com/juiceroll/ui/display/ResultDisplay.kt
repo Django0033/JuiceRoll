@@ -33,6 +33,7 @@ fun ResultDisplay(
         is FateCheckResult -> FateCheckDisplay(result, modifier)
         is ExpectationCheckResult -> ExpectationCheckDisplay(result, modifier)
         is ScaleResult -> ScaleDisplay(result, modifier)
+        is ScaledValueResult -> ScaledValueDisplay(result, modifier)
         is NextSceneResult -> NextSceneDisplay(result, modifier)
         is NextSceneWithFollowUpResult -> NextSceneWithFollowUpDisplay(result, modifier)
         is FocusResult -> FocusDisplay(result, modifier)
