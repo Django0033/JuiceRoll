@@ -34,7 +34,7 @@ val rollResultJson = Json {
             subclass(IdeaResult::class)
             subclass(SingleTableResult::class)
 
-            // NPC & Dialog (9)
+            // NPC & Dialog (10)
             subclass(NpcActionResult::class)
             subclass(MotiveWithFollowUpResult::class)
             subclass(SimpleNpcProfileResult::class)
@@ -44,6 +44,7 @@ val rollResultJson = Json {
             subclass(InformationResult::class)
             subclass(CompanionResponseResult::class)
             subclass(DialogTopicResult::class)
+            subclass(DialogResult::class)
 
             // Story (7)
             subclass(PayThePriceResult::class)

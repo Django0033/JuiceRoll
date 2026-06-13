@@ -55,6 +55,7 @@ fun ResultDisplay(
         is InformationResult -> InformationDisplay(result, modifier)
         is CompanionResponseResult -> CompanionResponseDisplay(result, modifier)
         is DialogTopicResult -> DialogTopicDisplay(result, modifier)
+        is DialogResult -> DialogDisplay(result, modifier)
 
         // ── Story ──
         is PayThePriceResult -> PayThePriceDisplay(result, modifier)

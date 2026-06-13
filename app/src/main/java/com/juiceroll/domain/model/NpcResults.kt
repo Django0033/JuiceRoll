@@ -166,3 +166,72 @@ data class DialogTopicResult(
     override val total: Int get() = roll
     override val interpretation: String? get() = topic
 }
+
+// ═══════════════════════════════════════════
+// Dialog Generator (5x5 Grid) Results
+// ═══════════════════════════════════════════
+
+/**
+ * State for the 5x5 Dialog Grid mini-game.
+ * The ViewModel holds and manages this state — generators are stateless.
+ */
+data class DialogGridState(
+    val currentRow: Int = 2,
+    val currentCol: Int = 2,
+    val conversationActive: Boolean = false,
+)
+
+/**
+ * Result of a single dialog grid roll + the new state after the move.
+ */
+data class DialogGridMoveResult(
+    val result: DialogResult,
+    val newState: DialogGridState,
+)
+
+@Serializable
+@SerialName("DialogResult")
+data class DialogResult(
+    val directionRoll: Int,
+    val subjectRoll: Int,
+    val direction: String,
+    val tone: String,
+    val subject: String,
+    val oldRow: Int,
+    val oldCol: Int,
+    val oldFragment: String,
+    val newRow: Int,
+    val newCol: Int,
+    val newFragment: String,
+    val isPast: Boolean,
+    val isDoubles: Boolean,
+    val fragmentDescription: String,
+    override val timestamp: Long = System.currentTimeMillis(),
+) : RollResult() {
+    override val type: RollType get() = RollType.DIALOG
+    override val description: String get() = "Dialog"
+    override val diceResults: List<Int> get() = listOf(directionRoll, subjectRoll)
+    override val total: Int get() = directionRoll + subjectRoll
+    override val interpretation: String?
+        get() = if (isDoubles) {
+            "[$tone about $subject] DOUBLES - Conversation Ends"
+        } else {
+            val tense = if (isPast) "Past" else "Present"
+            "→ $newFragment ($tense) [$tone about $subject]"
+        }
+
+    val conversationEnds: Boolean get() = isDoubles
+
+    val movementDescription: String
+        get() {
+            if (isDoubles) return "Conversation ends (doubles)"
+            val arrow = when (direction) {
+                "up" -> "↑"
+                "down" -> "↓"
+                "left" -> "←"
+                "right" -> "→"
+                else -> "?"
+            }
+            return "$oldFragment $arrow $newFragment"
+        }
+}

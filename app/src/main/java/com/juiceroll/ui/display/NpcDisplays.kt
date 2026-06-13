@@ -149,3 +149,26 @@ fun DialogTopicDisplay(
         DetailRow(label = "Topic", value = result.topic)
     }
 }
+
+@Composable
+fun DialogDisplay(
+    result: DialogResult,
+    modifier: Modifier = Modifier,
+) {
+    RollResultCard(result = result, modifier = modifier) {
+        DetailRow(label = "Direction", value = "${result.directionRoll} → ${result.direction}")
+        DetailRow(label = "Tone", value = result.tone)
+        DetailRow(label = "Subject", value = "${result.subjectRoll} → ${result.subject}")
+        if (!result.isDoubles) {
+            DetailRow(label = "Move", value = result.movementDescription)
+        }
+        DetailRow(
+            label = "Fragment",
+            value = if (result.isPast) "${result.newFragment} (Past)" else result.newFragment,
+        )
+        DetailRow(label = "Description", value = result.fragmentDescription)
+        if (result.isDoubles) {
+            DetailRow(label = "Doubles", value = "Conversation ends!")
+        }
+    }
+}

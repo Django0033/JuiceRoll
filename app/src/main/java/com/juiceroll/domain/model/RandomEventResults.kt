@@ -4,6 +4,14 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
+enum class IdeaCategory {
+    @SerialName("idea") IDEA,
+    @SerialName("event") EVENT,
+    @SerialName("person") PERSON,
+    @SerialName("object") OBJECT,
+}
+
+@Serializable
 @SerialName("RandomEventResult")
 data class RandomEventResult(
     val focusRoll: Int,
