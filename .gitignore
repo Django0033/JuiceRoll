@@ -45,5 +45,11 @@ replay_pid*
 # SDD artifacts (planning, specs, design)
 /openspec/
 
+# Keystore (NEVER commit)
+/app/keystore/
+
+# Keystore properties (local or CI-injected)
+keystore.properties
+
 # Gradle daemon JVM props (auto-generated)
 gradle/gradle-daemon-jvm.properties
