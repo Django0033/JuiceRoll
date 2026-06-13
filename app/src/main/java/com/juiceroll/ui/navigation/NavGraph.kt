@@ -17,12 +17,10 @@ fun NavGraph() {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
-        startDestination = Routes.HOME
+        startDestination = Routes.HOME,
     ) {
         composable(Routes.HOME) {
-            HomeScreen(
-                onNavigateToDice = { navController.navigate(Routes.DICE) }
-            )
+            HomeScreen()
         }
     }
 }
