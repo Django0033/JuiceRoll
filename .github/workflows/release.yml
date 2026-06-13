@@ -29,9 +29,9 @@ jobs:
 
       - name: Sign APK with debug key
         run: |
-          # Android SDK ships a debug keystore — sign the unsigned APK with it
-          # This makes the APK installable on any device without needing a custom keystore
-          $ANDROID_HOME/build-tools/*/apksigner sign \
+          APKSIGNER=$(ls $ANDROID_SDK_ROOT/build-tools/*/apksigner | head -1)
+          echo "Using apksigner: $APKSIGNER"
+          $APKSIGNER sign \
             --ks ~/.android/debug.keystore \
             --ks-pass pass:android \
             --ks-key-alias androiddebugkey \
