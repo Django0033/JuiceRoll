@@ -22,14 +22,14 @@ abstract class AppModule {
     @Binds
     @Singleton
     abstract fun bindSessionRepository(
-        impl: SessionRepositoryImpl
+        impl: SessionRepositoryImpl,
     ): SessionRepository
 
     companion object {
         @Provides
         @Singleton
         fun provideDataStore(
-            @ApplicationContext context: Context
+            @ApplicationContext context: Context,
         ): DataStore<Preferences> {
             return PreferenceDataStoreFactory.create {
                 context.preferencesDataStoreFile("juiceroll_preferences")
