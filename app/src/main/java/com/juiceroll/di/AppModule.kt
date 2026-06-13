@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStoreFile
 import com.juiceroll.data.session.SessionRepository
 import com.juiceroll.data.session.SessionRepositoryImpl
+import com.juiceroll.generator.PresetRegistry
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -34,6 +35,12 @@ abstract class AppModule {
             return PreferenceDataStoreFactory.create {
                 context.preferencesDataStoreFile("juiceroll_preferences")
             }
+        }
+
+        @Provides
+        @Singleton
+        fun providePresetRegistry(): PresetRegistry {
+            return PresetRegistry()
         }
     }
 }
