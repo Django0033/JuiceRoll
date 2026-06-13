@@ -152,10 +152,12 @@ fun HomeScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .windowInsetsPadding(WindowInsets.systemBars)
                 .padding(paddingValues)
                 .verticalScroll(rememberScrollState()),
         ) {
+            // Diagnostic spacer — if buttons appear, paddingValues is wrong
+            Spacer(modifier = Modifier.height(88.dp))
+
             // Oracle button grid (scrollable with parent)
             OracleButtonGrid(
                 onShowDialog = { type -> currentDialog = type },
