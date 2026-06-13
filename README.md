@@ -1,5 +1,4 @@
 # JuiceRoll
-<<<<<<< HEAD
 
 **A digital companion for the [Juice Oracle](https://thunder9861.itch.io/juice-oracle), a solo RPG tool inspired by Mythic GME, Ironsworn, and classic tabletop systems.**
 
@@ -11,23 +10,23 @@ JuiceRoll brings 23 oracle generators, dice rolling, and session management to A
 
 ### Core Roll Engine
 
-| Dice Type | Description |
-|-----------|-------------|
-| Standard (NdX) | Roll any combination of d4, d6, d8, d10, d12, d20, d100 |
-| Fate/Fudge | Roll dF with +, -, and blank faces — symbolic display (+, −, ○) |
-| Advantage / Disadvantage | Roll twice, keep higher or lower |
-| Skewed d6 | Weighted dice favoring high or low results |
-| Ironsworn | Action rolls (1d6 + 2d10), Progress rolls, Oracle d100, Yes/No with odds, Momentum burns |
+| Dice Type                | Description                                                                              |
+| ------------------------ | ---------------------------------------------------------------------------------------- |
+| Standard (NdX)           | Roll any combination of d4, d6, d8, d10, d12, d20, d100                                  |
+| Fate/Fudge               | Roll dF with +, -, and blank faces — symbolic display (+, −, ○)                          |
+| Advantage / Disadvantage | Roll twice, keep higher or lower                                                         |
+| Skewed d6                | Weighted dice favoring high or low results                                               |
+| Ironsworn                | Action rolls (1d6 + 2d10), Progress rolls, Oracle d100, Yes/No with odds, Momentum burns |
 
 ### 23 Oracle Generators
 
-| Category | Generators |
-|----------|------------|
-| **Core Oracles** | Fate Check, Expectation Check, Next Scene, Random Event, Discover Meaning, Interrupt Plot Point, Scale |
-| **Character & NPC** | NPC Action, Dialog Generator, Name Generator, Extended NPC Conversation |
-| **World Building** | Settlement, Wilderness, Dungeon Generator, Location, Monster Encounter, Quest, Treasure |
-| **Challenge** | Challenge (DC system), Pay the Price |
-| **Flavor** | Details, Immersion, Abstract Icons |
+| Category            | Generators                                                                                             |
+| ------------------- | ------------------------------------------------------------------------------------------------------ |
+| **Core Oracles**    | Fate Check, Expectation Check, Next Scene, Random Event, Discover Meaning, Interrupt Plot Point, Scale |
+| **Character & NPC** | NPC Action, Dialog Generator, Name Generator, Extended NPC Conversation                                |
+| **World Building**  | Settlement, Wilderness, Dungeon Generator, Location, Monster Encounter, Quest, Treasure                |
+| **Challenge**       | Challenge (DC system), Pay the Price                                                                   |
+| **Flavor**          | Details, Immersion, Abstract Icons                                                                     |
 
 Each generator uses table lookups from 20 oracle data files and produces typed results with full serialization support.
 
@@ -49,18 +48,18 @@ Each generator uses table lookups from 20 oracle data files and produces typed r
 
 ## Tech Stack
 
-| Component | Technology |
-|-----------|------------|
-| Language | [Kotlin](https://kotlinlang.org/) 2.2.10 |
-| UI | [Jetpack Compose](https://developer.android.com/jetpack/compose) + Material3 |
-| Architecture | MVVM with Repository Pattern |
-| DI | [Hilt](https://dagger.dev/hilt/) 2.59.2 (KSP) |
-| Persistence | [DataStore Preferences](https://developer.android.com/topic/libraries/architecture/datastore) |
-| Serialization | [kotlinx-serialization](https://github.com/Kotlin/kotlinx.serialization) (polymorphic) |
-| Navigation | [Navigation Compose](https://developer.android.com/develop/ui/views/navigation/navigation-getting-started) |
-| Build | [AGP](https://developer.android.com/build) 9.2.1 / Gradle 9.4.1 |
-| Code Quality | [ktlint](https://github.com/pinterest/ktlint) + [Kover](https://github.com/Kotlin/kotlinx-kover) (80% coverage) |
-| CI | [GitHub Actions](.github/workflows/ci.yml) |
+| Component     | Technology                                                                                                      |
+| ------------- | --------------------------------------------------------------------------------------------------------------- |
+| Language      | [Kotlin](https://kotlinlang.org/) 2.2.10                                                                        |
+| UI            | [Jetpack Compose](https://developer.android.com/jetpack/compose) + Material3                                    |
+| Architecture  | MVVM with Repository Pattern                                                                                    |
+| DI            | [Hilt](https://dagger.dev/hilt/) 2.59.2 (KSP)                                                                   |
+| Persistence   | [DataStore Preferences](https://developer.android.com/topic/libraries/architecture/datastore)                   |
+| Serialization | [kotlinx-serialization](https://github.com/Kotlin/kotlinx.serialization) (polymorphic)                          |
+| Navigation    | [Navigation Compose](https://developer.android.com/develop/ui/views/navigation/navigation-getting-started)      |
+| Build         | [AGP](https://developer.android.com/build) 9.2.1 / Gradle 9.4.1                                                 |
+| Code Quality  | [ktlint](https://github.com/pinterest/ktlint) + [Kover](https://github.com/Kotlin/kotlinx-kover) (80% coverage) |
+| CI            | [GitHub Actions](.github/workflows/ci.yml)                                                                      |
 
 ## Project Structure
 
@@ -182,13 +181,13 @@ Compose UI  ──observes──>  ViewModel  ──calls──>  Generator / Re
 
 ### Key Design Decisions
 
-| Decision | Rationale |
-|----------|-----------|
-| **Sealed class hierarchy** for RollResult | Kotlin's `when` exhaustiveness ensures all 69+ subtypes are handled in display logic — compiler-enforced completeness |
-| **Polymorphic kotlinx-serialization** | Uses `classDiscriminator = "className"` to match the Flutter reference's JSON format, enabling cross-platform session portability |
-| **DataStore per-session keys** | Avoids the 100KB per-key limit by storing each session independently; metadata-only list for the session selector |
-| **No Google Fonts API** | Bundled Roboto Mono TTF + system Noto Serif — more reliable than the DownloadableFonts API, works offline |
-| **Stateless generators** | All 23 generators accept `RollEngine` via constructor injection. The one stateful Flutter generator (DialogGenerator) was refactored to accept state as parameters |
+| Decision                                  | Rationale                                                                                                                                                          |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Sealed class hierarchy** for RollResult | Kotlin's `when` exhaustiveness ensures all 69+ subtypes are handled in display logic — compiler-enforced completeness                                              |
+| **Polymorphic kotlinx-serialization**     | Uses `classDiscriminator = "className"` to match the Flutter reference's JSON format, enabling cross-platform session portability                                  |
+| **DataStore per-session keys**            | Avoids the 100KB per-key limit by storing each session independently; metadata-only list for the session selector                                                  |
+| **No Google Fonts API**                   | Bundled Roboto Mono TTF + system Noto Serif — more reliable than the DownloadableFonts API, works offline                                                          |
+| **Stateless generators**                  | All 23 generators accept `RollEngine` via constructor injection. The one stateful Flutter generator (DialogGenerator) was refactored to accept state as parameters |
 
 ## Tests
 
@@ -214,6 +213,5 @@ The test suite covers:
 - **[Juice Oracle](https://thunder9861.itch.io/juice-oracle)** by thunder9861 — the original oracle system
 - **[Ironsworn](https://www.ironswornrpg.com/)** by Shawn Tomkin — solo RPG mechanics
 - **[Mythic GME](https://www.mythic.wordpr.com/page14/page14.html)** by Tana Pigeon — game master emulator concepts
-=======
+
 A port of johnkord's Juice Roll
->>>>>>> 9bb16f58e7152320410cf0bf099ee32edc83b4a2
