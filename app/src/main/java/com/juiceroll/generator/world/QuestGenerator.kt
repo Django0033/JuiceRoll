@@ -7,16 +7,20 @@ import com.juiceroll.data.oracle.RandomEventData
 import com.juiceroll.data.oracle.WildernessData
 import com.juiceroll.domain.engine.RollEngine
 import com.juiceroll.domain.model.QuestResult
+import com.juiceroll.generator.challenge.DetailsGenerator
 
 /**
  * Quest generator preset for the Juice Oracle.
  * Uses quest.md to generate full quest descriptions.
  *
  * Entries in italics reference other tables and are automatically expanded.
+ * Updated to use DungeonGenerator and WildernessGenerator as proper dependencies.
  */
 class QuestGenerator(
     private val rollEngine: RollEngine = RollEngine,
     private val settlementGenerator: SettlementGenerator = SettlementGenerator(rollEngine),
+    private val dungeonGenerator: DungeonGenerator = DungeonGenerator(rollEngine),
+    private val wildernessGenerator: WildernessGenerator = WildernessGenerator(rollEngine),
 ) {
     /**
      * Generate a complete quest with expanded sub-table references.
@@ -75,6 +79,7 @@ class QuestGenerator(
 
     /**
      * Expand a focus entry by rolling on the appropriate sub-table.
+     * Uses DungeonGenerator and WildernessGenerator instead of direct data access.
      */
     private fun expandFocus(focus: String): Pair<Int, String>? {
         if (!QuestData.italicFocuses.contains(focus)) return null
@@ -98,6 +103,7 @@ class QuestGenerator(
 
     /**
      * Expand a location entry by rolling on the appropriate sub-table.
+     * Uses DungeonGenerator and WildernessGenerator instead of direct data access.
      */
     private fun expandLocation(location: String): Pair<Int, String>? {
         if (!QuestData.italicLocations.contains(location)) return null
@@ -108,17 +114,8 @@ class QuestGenerator(
         return when (location) {
             "Dungeon Feature" -> subRoll to DungeonData.dungeonFeatureTypes[subIndex]
             "Dungeon" -> {
-                // Generate a dungeon name: "DungeonType of the DescriptionWord Subject"
-                val type = DungeonData.dungeonTypes[subIndex]
-                val descRoll = rollEngine.rollDie(10)
-                val subjectRoll = rollEngine.rollDie(10)
-                val desc = DungeonData.dungeonDescriptions[
-                    if (descRoll == 10) 9 else descRoll - 1
-                ]
-                val subject = DungeonData.dungeonSubjects[
-                    if (subjectRoll == 10) 9 else subjectRoll - 1
-                ]
-                subRoll to "$type of the $desc $subject"
+                val dungeonName = dungeonGenerator.generateName()
+                subRoll to dungeonName.name
             }
             "Environment" -> subRoll to WildernessData.wildernessEnvironments[subIndex]
             "Event" -> subRoll to RandomEventData.eventWords[subIndex]

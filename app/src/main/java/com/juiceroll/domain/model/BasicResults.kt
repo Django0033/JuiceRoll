@@ -151,21 +151,39 @@ data class FullImmersionResult(
 // Wilderness Results
 // ═══════════════════════════════════════════
 
+/**
+ * Persistent state for wilderness exploration.
+ */
+@Serializable
+data class WildernessState(
+    val environmentRow: Int, // 1-10
+    val typeRow: Int,        // 1-10
+    val isLost: Boolean = false,
+)
+
 @Serializable
 @SerialName("WildernessAreaResult")
 data class WildernessAreaResult(
+    val envFateDice: List<Int>,
     val envRoll: Int,
     val environment: String,
+    val typeFateDie: Int,
     val typeRoll: Int,
     val typeName: String,
     val typeModifier: Int,
     val isTransition: Boolean = false,
+    val previousEnvironment: String? = null,
+    val isManualSet: Boolean = false,
+    val newState: WildernessState? = null,
     override val timestamp: Long = System.currentTimeMillis(),
 ) : RollResult() {
     override val type: RollType get() = RollType.WEATHER
     override val description: String
-        get() = if (isTransition) "Wilderness Transition" else "Wilderness Area"
-    override val diceResults: List<Int> get() = listOf(envRoll, typeRoll)
+        get() = if (isManualSet) "Set Wilderness Position"
+        else if (isTransition) "Wilderness Transition" else "Wilderness Area"
+    override val diceResults: List<Int>
+        get() = if (isManualSet) listOf(envRoll, typeRoll)
+        else buildList { addAll(envFateDice); add(typeFateDie); add(typeRoll) }
     override val total: Int get() = envRoll + typeRoll
     override val interpretation: String? get() = "$typeName $environment"
 }
@@ -182,6 +200,11 @@ data class WildernessEncounterResult(
     val wasLost: Boolean = false,
     val becameLost: Boolean = false,
     val becameFound: Boolean = false,
+    val isItalic: Boolean = false,
+    val partialItalic: String? = null,
+    val followUpRoll: Int? = null,
+    val followUpResult: String? = null,
+    val newState: WildernessState? = null,
     override val timestamp: Long = System.currentTimeMillis(),
 ) : RollResult() {
     override val type: RollType get() = RollType.ENCOUNTER
@@ -195,10 +218,14 @@ data class WildernessEncounterResult(
 @Serializable
 @SerialName("WildernessWeatherResult")
 data class WildernessWeatherResult(
+    val environmentSkew: String,
+    val typeModifier: Int,
     val baseRoll: Int,
     val secondRoll: Int? = null,
     val weatherRow: Int,
     val weather: String,
+    val environment: String,
+    val typeName: String,
     override val timestamp: Long = System.currentTimeMillis(),
 ) : RollResult() {
     override val type: RollType get() = RollType.WEATHER
@@ -207,6 +234,7 @@ data class WildernessWeatherResult(
         get() = if (secondRoll != null) listOf(baseRoll, secondRoll) else listOf(baseRoll)
     override val total: Int get() = weatherRow
     override val interpretation: String? get() = weather
+    val formula: String get() = "1d6@$environmentSkew + $typeModifier"
 }
 
 @Serializable

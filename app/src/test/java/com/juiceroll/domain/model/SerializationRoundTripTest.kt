@@ -308,7 +308,9 @@ class SerializationRoundTripTest(private val testCase: RoundTripCase) {
                 ),
             )),
             RoundTripCase("WildernessAreaResult", WildernessAreaResult(
+                envFateDice = listOf(1, 0),
                 envRoll = 5, environment = "Forest",
+                typeFateDie = 0,
                 typeRoll = 3, typeName = "Dense",
                 typeModifier = 1,
             )),
@@ -316,7 +318,13 @@ class SerializationRoundTripTest(private val testCase: RoundTripCase) {
                 roll = 7, encounter = "Wolf pack",
             )),
             RoundTripCase("WildernessWeatherResult", WildernessWeatherResult(
-                baseRoll = 3, weatherRow = 4, weather = "Rain",
+                baseRoll = 3,
+                secondRoll = null,
+                environmentSkew = "0",
+                typeModifier = 2,
+                weatherRow = 4, weather = "Rain",
+                environment = "Forest",
+                typeName = "Dense",
             )),
             RoundTripCase("WildernessDetailResult", WildernessDetailResult(
                 detailType = "Flora", roll = 5, result = "Mushrooms",
