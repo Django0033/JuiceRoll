@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -29,6 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.juiceroll.domain.model.RollResult
 import com.juiceroll.ui.display.ResultDisplay
 import com.juiceroll.ui.theme.Parchment
@@ -58,11 +60,17 @@ fun OracleDialog(
     onDismissRequest: () -> Unit,
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    Dialog(onDismissRequest = onDismissRequest) {
+    Dialog(
+        onDismissRequest = onDismissRequest,
+        properties = DialogProperties(usePlatformDefaultWidth = false),
+    ) {
         Surface(
             shape = RoundedCornerShape(16.dp),
             color = Surface,
             tonalElevation = 0.dp,
+            modifier = Modifier
+                .fillMaxWidth(0.92f)
+                .widthIn(min = 320.dp),
         ) {
             Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 20.dp)) {
                 // Title row: icon + title + close
@@ -133,11 +141,17 @@ fun SimpleOracleDialog(
     onDismissRequest: () -> Unit,
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    Dialog(onDismissRequest = onDismissRequest) {
+    Dialog(
+        onDismissRequest = onDismissRequest,
+        properties = DialogProperties(usePlatformDefaultWidth = false),
+    ) {
         Surface(
             shape = RoundedCornerShape(16.dp),
             color = Surface,
             tonalElevation = 0.dp,
+            modifier = Modifier
+                .fillMaxWidth(0.92f)
+                .widthIn(min = 320.dp),
         ) {
             Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 20.dp)) {
                 // Title row with close
