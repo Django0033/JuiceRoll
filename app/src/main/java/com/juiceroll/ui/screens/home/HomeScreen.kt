@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.Casino
@@ -147,12 +149,12 @@ fun HomeScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues),
+                .padding(paddingValues)
+                .verticalScroll(rememberScrollState()),
         ) {
-            // Oracle button grid (static, scrollable)
+            // Oracle button grid (scrollable with parent)
             OracleButtonGrid(
                 onShowDialog = { type -> currentDialog = type },
-                modifier = Modifier.weight(1f),
             )
 
             HorizontalDivider(
@@ -164,8 +166,9 @@ fun HomeScreen(
             HistoryContent(
                 rollHistory = rollHistory,
                 onClearHistory = { viewModel.clearHistory() },
-                modifier = Modifier.weight(1f),
             )
+
+            Spacer(Modifier.height(8.dp))
         }
     }
 }
