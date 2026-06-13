@@ -146,7 +146,7 @@ private fun RollHistoryItem(
         border = BorderStroke(1.dp, ParchmentDark.copy(alpha = 0.1f)),
         tonalElevation = 0.dp,
     ) {
-        Column(modifier = Modifier.padding(8.dp)) {
+        Column(modifier = Modifier.padding(6.dp)) {
             // Type label
             Text(
                 text = result.description,
@@ -154,7 +154,7 @@ private fun RollHistoryItem(
                 fontWeight = FontWeight.SemiBold,
                 color = Gold,
             )
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(2.dp))
 
             // Dice values
             if (result.diceResults.isNotEmpty()) {

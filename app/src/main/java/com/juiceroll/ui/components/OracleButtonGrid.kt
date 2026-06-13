@@ -120,7 +120,7 @@ fun OracleButtonGrid(
             ButtonDef("Fate", Icons.AutoMirrored.Filled.HelpOutline, Mystic, OracleDialogType.FATE_CHECK),
             ButtonDef("Scene", Icons.Filled.Theaters, Info, OracleDialogType.NEXT_SCENE),
         ), onShowDialog = onShowDialog)
-        Spacer(Modifier.height(4.dp))
+        Spacer(Modifier.height(6.dp))
 
         // Row 2: Oracle (Expect, Scale, Interrupt, Meaning)
         GridRow(buttons = listOf(
@@ -129,7 +129,7 @@ fun OracleButtonGrid(
             ButtonDef("Interrupt", Icons.Filled.Bolt, JuiceOrange, OracleDialogType.INTERRUPT_PLOT_POINT),
             ButtonDef("Meaning", Icons.Filled.Lightbulb, Gold, OracleDialogType.DISCOVER_MEANING),
         ), onShowDialog = onShowDialog)
-        Spacer(Modifier.height(4.dp))
+            Spacer(Modifier.height(6.dp))
 
         // Row 3: Character + Story (Name, Random, Quest, Challenge)
         GridRow(buttons = listOf(
@@ -138,7 +138,7 @@ fun OracleButtonGrid(
             ButtonDef("Quest", Icons.Filled.Map, Rust, OracleDialogType.QUEST),
             ButtonDef("Challenge", Icons.Filled.FitnessCenter, CategoryCombat, OracleDialogType.CHALLENGE),
         ), onShowDialog = onShowDialog)
-        Spacer(Modifier.height(4.dp))
+            Spacer(Modifier.height(6.dp))
 
         // Row 4: Story + Exploration (Price, Wilderness, Monster, NPC)
         GridRow(buttons = listOf(
@@ -147,7 +147,7 @@ fun OracleButtonGrid(
             ButtonDef("Monster", Icons.Filled.PestControl, Danger, OracleDialogType.MONSTER_ENCOUNTER),
             ButtonDef("NPC", Icons.Filled.Person, CategoryCharacter, OracleDialogType.NPC_ACTION),
         ), onShowDialog = onShowDialog)
-        Spacer(Modifier.height(4.dp))
+            Spacer(Modifier.height(6.dp))
 
         // Row 5: World (Dialog, Settlement, Treasure, Dungeon)
         GridRow(buttons = listOf(
@@ -156,7 +156,7 @@ fun OracleButtonGrid(
             ButtonDef("Treasure", Icons.Filled.Diamond, Gold, OracleDialogType.TREASURE),
             ButtonDef("Dungeon", Icons.Filled.Castle, CategoryUtility, OracleDialogType.DUNGEON),
         ), onShowDialog = onShowDialog)
-        Spacer(Modifier.height(4.dp))
+            Spacer(Modifier.height(6.dp))
 
         // Row 6: World + Utility (Location, NPC Talk, Abstract, Dice)
         GridRow(buttons = listOf(
@@ -217,24 +217,23 @@ private fun OracleButton(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 8.dp),
+                .padding(vertical = 12.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Icon(
                 imageVector = icon,
                 contentDescription = null,
                 tint = color,
-                modifier = Modifier.size(22.dp),
+                modifier = Modifier.size(28.dp),
             )
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(6.dp))
             Text(
                 text = label,
-                style = MaterialTheme.typography.labelSmall,
+                style = MaterialTheme.typography.labelMedium,
                 fontWeight = FontWeight.SemiBold,
                 color = color,
                 textAlign = TextAlign.Center,
                 maxLines = 1,
-                fontSize = 11.sp,
             )
         }
     }
