@@ -160,9 +160,13 @@ class HomeViewModel @Inject constructor(
 
     fun addToHistory(result: RollResult) {
         viewModelScope.launch {
-            _rollHistory.value = listOf(result) + _rollHistory.value
-            _activeSession.value?.let { session ->
-                sessionRepository.addRollToSession(session.id, result)
+            try {
+                _rollHistory.value = listOf(result) + _rollHistory.value
+                _activeSession.value?.let { session ->
+                    sessionRepository.addRollToSession(session.id, result)
+                }
+            } catch (e: Exception) {
+                android.util.Log.e("HomeViewModel", "Failed to save roll: ${e.message}", e)
             }
         }
     }
