@@ -69,7 +69,6 @@ fun MonsterEncounterDialog(
     onDismiss: () -> Unit,
     monsterGenerator: MonsterEncounterGenerator = remember { MonsterEncounterGenerator() },
 ) {
-    var currentResult by remember { mutableStateOf<RollResult?>(null) }
     var selectedEnvironment by remember { mutableStateOf(6) } // Default to Forest
     var showEnvironmentMenu by remember { mutableStateOf(false) }
 
@@ -198,7 +197,8 @@ fun MonsterEncounterDialog(
             subtitle = "Row ($envFormula) + Difficulty (2d10) + Counts (1d6-1@)",
             icon = Icons.Filled.Groups,
             onClick = {
-                currentResult = monsterGenerator.generateFullEncounter(selectedEnvironment)
+                onRoll(monsterGenerator.generateFullEncounter(selectedEnvironment))
+                onDismiss()
             },
         )
 
@@ -249,7 +249,8 @@ fun MonsterEncounterDialog(
                 color = combatColor,
                 modifier = Modifier.weight(1f),
                 onClick = {
-                    currentResult = monsterGenerator.rollEncounter()
+                    onRoll(monsterGenerator.rollEncounter())
+                onDismiss()
                 },
             )
             Spacer(modifier = Modifier.width(8.dp))
@@ -260,7 +261,8 @@ fun MonsterEncounterDialog(
                 color = Sepia,
                 modifier = Modifier.weight(1f),
                 onClick = {
-                    currentResult = monsterGenerator.rollTracks()
+                    onRoll(monsterGenerator.rollTracks())
+                    onDismiss()
                 },
             )
         }
@@ -280,7 +282,8 @@ fun MonsterEncounterDialog(
                 color = Success,
                 modifier = Modifier.weight(1f),
                 onClick = {
-                    currentResult = monsterGenerator.rollEncounter(forcedDifficulty = "easy")
+                    onRoll(monsterGenerator.rollEncounter(forcedDifficulty = "easy"))
+                    onDismiss()
                 },
             )
             Spacer(modifier = Modifier.width(6.dp))
@@ -290,7 +293,8 @@ fun MonsterEncounterDialog(
                 color = JuiceOrange,
                 modifier = Modifier.weight(1f),
                 onClick = {
-                    currentResult = monsterGenerator.rollEncounter(forcedDifficulty = "medium")
+                    onRoll(monsterGenerator.rollEncounter(forcedDifficulty = "medium"))
+                    onDismiss()
                 },
             )
         }
@@ -302,7 +306,8 @@ fun MonsterEncounterDialog(
                 color = Danger,
                 modifier = Modifier.weight(1f),
                 onClick = {
-                    currentResult = monsterGenerator.rollEncounter(forcedDifficulty = "hard")
+                    onRoll(monsterGenerator.rollEncounter(forcedDifficulty = "hard"))
+                    onDismiss()
                 },
             )
             Spacer(modifier = Modifier.width(6.dp))
@@ -313,7 +318,8 @@ fun MonsterEncounterDialog(
                 icon = Icons.Filled.Star,
                 modifier = Modifier.weight(1f),
                 onClick = {
-                    currentResult = monsterGenerator.rollEncounter(forcedDifficulty = "boss")
+                    onRoll(monsterGenerator.rollEncounter(forcedDifficulty = "boss"))
+                    onDismiss()
                 },
             )
         }
@@ -334,7 +340,8 @@ fun MonsterEncounterDialog(
                 color = exploreColor,
                 modifier = Modifier.weight(1f),
                 onClick = {
-                    currentResult = monsterGenerator.rollSpecialRow(humanoid = false)
+                    onRoll(monsterGenerator.rollSpecialRow(humanoid = false))
+                    onDismiss()
                 },
             )
             Spacer(modifier = Modifier.width(6.dp))
@@ -345,36 +352,12 @@ fun MonsterEncounterDialog(
                 color = Rust,
                 modifier = Modifier.weight(1f),
                 onClick = {
-                    currentResult = monsterGenerator.rollSpecialRow(humanoid = true)
+                    onRoll(monsterGenerator.rollSpecialRow(humanoid = true))
+                    onDismiss()
                 },
             )
         }
 
-        Spacer(modifier = Modifier.height(14.dp))
-
-        // ── Result Display ──
-        RollResultSection(result = currentResult)
-
-        // ── Save & Close ──
-        if (currentResult != null) {
-            Spacer(modifier = Modifier.height(12.dp))
-            Button(
-                onClick = {
-                    currentResult?.let { onRoll(it) }
-                    onDismiss()
-                },
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Gold.copy(alpha = 0.2f),
-                    contentColor = Gold,
-                ),
-                shape = RoundedCornerShape(8.dp),
-            ) {
-                Text("Save & Close", style = MaterialTheme.typography.labelLarge)
-            }
-        }
-
-        Spacer(modifier = Modifier.height(4.dp))
     }
 }
 

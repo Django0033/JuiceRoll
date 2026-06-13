@@ -64,7 +64,6 @@ fun ChallengeDialog(
     onDismiss: () -> Unit,
     challengeGenerator: ChallengeGenerator = remember { ChallengeGenerator() },
 ) {
-    var currentResult by remember { mutableStateOf<RollResult?>(null) }
     val accentColor = Rust
 
     SimpleOracleDialog(
@@ -125,7 +124,8 @@ fun ChallengeDialog(
                 color = ParchmentDark,
                 modifier = Modifier.weight(1f),
                 onClick = {
-                    currentResult = challengeGenerator.rollFullChallenge()
+                    onRoll(challengeGenerator.rollFullChallenge())
+                    onDismiss()
                 },
             )
             Spacer(modifier = Modifier.width(6.dp))
@@ -135,7 +135,8 @@ fun ChallengeDialog(
                 color = Success,
                 modifier = Modifier.weight(1f),
                 onClick = {
-                    currentResult = challengeGenerator.rollFullChallenge(dcSkew = "advantage")
+                    onRoll(challengeGenerator.rollFullChallenge(dcSkew = "advantage"))
+                    onDismiss()
                 },
             )
             Spacer(modifier = Modifier.width(6.dp))
@@ -145,7 +146,8 @@ fun ChallengeDialog(
                 color = Danger,
                 modifier = Modifier.weight(1f),
                 onClick = {
-                    currentResult = challengeGenerator.rollFullChallenge(dcSkew = "disadvantage")
+                    onRoll(challengeGenerator.rollFullChallenge(dcSkew = "disadvantage"))
+                    onDismiss()
                 },
             )
         }
@@ -172,7 +174,8 @@ fun ChallengeDialog(
                 color = Gold,
                 modifier = Modifier.weight(1f),
                 onClick = {
-                    currentResult = challengeGenerator.rollQuickDc()
+                    onRoll(challengeGenerator.rollQuickDc())
+                    onDismiss()
                 },
             )
             Spacer(modifier = Modifier.width(6.dp))
@@ -183,7 +186,8 @@ fun ChallengeDialog(
                 color = ParchmentDark,
                 modifier = Modifier.weight(1f),
                 onClick = {
-                    currentResult = challengeGenerator.rollDc()
+                    onRoll(challengeGenerator.rollDc())
+                    onDismiss()
                 },
             )
         }
@@ -197,7 +201,8 @@ fun ChallengeDialog(
                 color = Info,
                 modifier = Modifier.weight(1f),
                 onClick = {
-                    currentResult = challengeGenerator.rollBalancedDc()
+                    onRoll(challengeGenerator.rollBalancedDc())
+                    onDismiss()
                 },
             )
             Spacer(modifier = Modifier.width(6.dp))
@@ -208,7 +213,8 @@ fun ChallengeDialog(
                 color = Success,
                 modifier = Modifier.weight(1f),
                 onClick = {
-                    currentResult = challengeGenerator.rollDc(skew = "advantage")
+                    onRoll(challengeGenerator.rollDc(skew = "advantage"))
+                    onDismiss()
                 },
             )
             Spacer(modifier = Modifier.width(6.dp))
@@ -219,7 +225,8 @@ fun ChallengeDialog(
                 color = Danger,
                 modifier = Modifier.weight(1f),
                 onClick = {
-                    currentResult = challengeGenerator.rollDc(skew = "disadvantage")
+                    onRoll(challengeGenerator.rollDc(skew = "disadvantage"))
+                    onDismiss()
                 },
             )
         }
@@ -239,7 +246,8 @@ fun ChallengeDialog(
                 skills = "Medicine, Survival, Athletics...",
                 modifier = Modifier.weight(1f),
                 onClick = {
-                    currentResult = challengeGenerator.rollPhysicalChallenge()
+                    onRoll(challengeGenerator.rollPhysicalChallenge())
+                    onDismiss()
                 },
             )
             Spacer(modifier = Modifier.width(8.dp))
@@ -250,7 +258,8 @@ fun ChallengeDialog(
                 skills = "Nature, Arcana, Insight...",
                 modifier = Modifier.weight(1f),
                 onClick = {
-                    currentResult = challengeGenerator.rollMentalChallenge()
+                    onRoll(challengeGenerator.rollMentalChallenge())
+                    onDismiss()
                 },
             )
         }
@@ -270,7 +279,8 @@ fun ChallengeDialog(
         Spacer(modifier = Modifier.height(6.dp))
         OutlinedButton(
             onClick = {
-                currentResult = challengeGenerator.rollPercentageChance()
+                onRoll(challengeGenerator.rollPercentageChance())
+                onDismiss()
             },
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.outlinedButtonColors(
@@ -324,31 +334,6 @@ fun ChallengeDialog(
             }
         }
 
-        Spacer(modifier = Modifier.height(14.dp))
-
-        // ── Result Display ──
-        RollResultSection(result = currentResult)
-
-        // ── Save & Close ──
-        if (currentResult != null) {
-            Spacer(modifier = Modifier.height(12.dp))
-            Button(
-                onClick = {
-                    currentResult?.let { onRoll(it) }
-                    onDismiss()
-                },
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Gold.copy(alpha = 0.2f),
-                    contentColor = Gold,
-                ),
-                shape = RoundedCornerShape(8.dp),
-            ) {
-                Text("Save & Close", style = MaterialTheme.typography.labelLarge)
-            }
-        }
-
-        Spacer(modifier = Modifier.height(4.dp))
     }
 }
 

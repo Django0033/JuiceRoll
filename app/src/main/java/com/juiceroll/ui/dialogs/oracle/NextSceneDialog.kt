@@ -63,7 +63,6 @@ fun NextSceneDialog(
     randomEventGenerator: RandomEventGenerator = remember { RandomEventGenerator() },
     interruptPlotPointGenerator: InterruptPlotPointGenerator = remember { InterruptPlotPointGenerator() },
 ) {
-    var currentResult by remember { mutableStateOf<RollResult?>(null) }
     var useSimpleMode by remember { mutableStateOf(false) }
 
     OracleDialog(
@@ -191,7 +190,8 @@ fun NextSceneDialog(
             iconColor = Gold,
             highlighted = false,
             onClick = {
-                currentResult = nextSceneGenerator.determineScene()
+                onRoll(nextSceneGenerator.determineScene())
+                onDismiss()
             },
         )
         Spacer(modifier = Modifier.height(4.dp))
@@ -207,7 +207,7 @@ fun NextSceneDialog(
             onClick = {
                 val sceneResult = nextSceneGenerator.determineScene()
                 val sceneType = sceneResult.sceneType
-                currentResult = when {
+                val result = when {
                     sceneType == "alterAdd" || sceneType == "alterRemove" -> {
                         if (useSimpleMode) {
                             randomEventGenerator.generateIdea()
@@ -220,6 +220,8 @@ fun NextSceneDialog(
                     }
                     else -> sceneResult
                 }
+                onRoll(result)
+                onDismiss()
             },
         )
 
@@ -239,7 +241,8 @@ fun NextSceneDialog(
                 iconColor = Info,
                 modifier = Modifier.weight(1f),
                 onClick = {
-                    currentResult = nextSceneGenerator.rollFocus()
+                    onRoll(nextSceneGenerator.rollFocus())
+                    onDismiss()
                 },
             )
             Spacer(modifier = Modifier.width(6.dp))
@@ -250,7 +253,8 @@ fun NextSceneDialog(
                 iconColor = Mystic,
                 modifier = Modifier.weight(1f),
                 onClick = {
-                    currentResult = randomEventGenerator.generateIdea()
+                    onRoll(randomEventGenerator.generateIdea())
+                    onDismiss()
                 },
             )
         }
@@ -289,31 +293,6 @@ fun NextSceneDialog(
             }
         }
 
-        Spacer(modifier = Modifier.height(14.dp))
-
-        // ── Result Display ──
-        RollResultSection(result = currentResult)
-
-        // ── Save & Close ──
-        if (currentResult != null) {
-            Spacer(modifier = Modifier.height(12.dp))
-            Button(
-                onClick = {
-                    currentResult?.let { onRoll(it) }
-                    onDismiss()
-                },
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Gold.copy(alpha = 0.2f),
-                    contentColor = Gold,
-                ),
-                shape = RoundedCornerShape(8.dp),
-            ) {
-                Text("Save & Close", style = MaterialTheme.typography.labelLarge)
-            }
-        }
-
-        Spacer(modifier = Modifier.height(4.dp))
     }
 }
 

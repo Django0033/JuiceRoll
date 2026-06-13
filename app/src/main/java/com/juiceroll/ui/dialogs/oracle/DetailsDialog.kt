@@ -70,8 +70,6 @@ fun DetailsDialog(
     onDismiss: () -> Unit,
     detailsGenerator: DetailsGenerator = remember { DetailsGenerator() },
 ) {
-    var currentResult by remember { mutableStateOf<RollResult?>(null) }
-
     val colorSectionColor = Info
     val propertySectionColor = Gold
     val detailSectionColor = Mystic
@@ -163,7 +161,9 @@ fun DetailsDialog(
                 // Roll button
                 OutlinedButton(
                     onClick = {
-                        currentResult = detailsGenerator.rollColor()
+                        val result = detailsGenerator.rollColor()
+                        onRoll(result)
+                        onDismiss()
                     },
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.outlinedButtonColors(
@@ -325,7 +325,9 @@ fun DetailsDialog(
                     Row(modifier = Modifier.fillMaxWidth()) {
                         OutlinedButton(
                             onClick = {
-                                currentResult = detailsGenerator.rollTwoProperties()
+                                val result = detailsGenerator.rollTwoProperties()
+                                onRoll(result)
+                                onDismiss()
                             },
                             modifier = Modifier.weight(3f),
                             colors = ButtonDefaults.outlinedButtonColors(
@@ -358,7 +360,9 @@ fun DetailsDialog(
                         Spacer(modifier = Modifier.width(8.dp))
                         OutlinedButton(
                             onClick = {
-                                currentResult = detailsGenerator.rollProperty()
+                                val result = detailsGenerator.rollProperty()
+                                onRoll(result)
+                                onDismiss()
                             },
                             modifier = Modifier.weight(2f),
                             colors = ButtonDefaults.outlinedButtonColors(
@@ -426,7 +430,9 @@ fun DetailsDialog(
                 Spacer(modifier = Modifier.height(8.dp))
                 OutlinedButton(
                     onClick = {
-                        currentResult = detailsGenerator.rollDetailWithFollowUp()
+                        val result = detailsGenerator.rollDetailWithFollowUp()
+                        onRoll(result)
+                        onDismiss()
                     },
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.outlinedButtonColors(
@@ -448,7 +454,9 @@ fun DetailsDialog(
                 Row(modifier = Modifier.fillMaxWidth()) {
                     OutlinedButton(
                         onClick = {
-                            currentResult = detailsGenerator.rollDetailWithFollowUp(skew = "advantage")
+                            val result = detailsGenerator.rollDetailWithFollowUp(skew = "advantage")
+                            onRoll(result)
+                            onDismiss()
                         },
                         modifier = Modifier.weight(1f),
                         colors = ButtonDefaults.outlinedButtonColors(
@@ -476,7 +484,9 @@ fun DetailsDialog(
                     Spacer(modifier = Modifier.width(8.dp))
                     OutlinedButton(
                         onClick = {
-                            currentResult = detailsGenerator.rollDetailWithFollowUp(skew = "disadvantage")
+                            val result = detailsGenerator.rollDetailWithFollowUp(skew = "disadvantage")
+                            onRoll(result)
+                            onDismiss()
                         },
                         modifier = Modifier.weight(1f),
                         colors = ButtonDefaults.outlinedButtonColors(
@@ -541,7 +551,9 @@ fun DetailsDialog(
                 Spacer(modifier = Modifier.height(8.dp))
                 OutlinedButton(
                     onClick = {
-                        currentResult = detailsGenerator.rollHistory()
+                        val result = detailsGenerator.rollHistory()
+                        onRoll(result)
+                        onDismiss()
                     },
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.outlinedButtonColors(
@@ -563,7 +575,9 @@ fun DetailsDialog(
                 Row(modifier = Modifier.fillMaxWidth()) {
                     OutlinedButton(
                         onClick = {
-                            currentResult = detailsGenerator.rollHistory(skew = "advantage")
+                            val result = detailsGenerator.rollHistory(skew = "advantage")
+                            onRoll(result)
+                            onDismiss()
                         },
                         modifier = Modifier.weight(1f),
                         colors = ButtonDefaults.outlinedButtonColors(
@@ -591,7 +605,9 @@ fun DetailsDialog(
                     Spacer(modifier = Modifier.width(8.dp))
                     OutlinedButton(
                         onClick = {
-                            currentResult = detailsGenerator.rollHistory(skew = "disadvantage")
+                            val result = detailsGenerator.rollHistory(skew = "disadvantage")
+                            onRoll(result)
+                            onDismiss()
                         },
                         modifier = Modifier.weight(1f),
                         colors = ButtonDefaults.outlinedButtonColors(
@@ -620,30 +636,5 @@ fun DetailsDialog(
             }
         }
 
-        Spacer(modifier = Modifier.height(14.dp))
-
-        // ── Result Display ──
-        RollResultSection(result = currentResult)
-
-        // ── Save & Close ──
-        if (currentResult != null) {
-            Spacer(modifier = Modifier.height(12.dp))
-            Button(
-                onClick = {
-                    currentResult?.let { onRoll(it) }
-                    onDismiss()
-                },
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Gold.copy(alpha = 0.2f),
-                    contentColor = Gold,
-                ),
-                shape = RoundedCornerShape(8.dp),
-            ) {
-                Text("Save & Close", style = MaterialTheme.typography.labelLarge)
-            }
-        }
-
-        Spacer(modifier = Modifier.height(4.dp))
     }
 }

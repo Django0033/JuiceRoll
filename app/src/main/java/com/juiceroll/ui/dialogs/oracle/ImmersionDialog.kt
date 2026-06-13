@@ -70,8 +70,6 @@ fun ImmersionDialog(
     onDismiss: () -> Unit,
     immersionGenerator: ImmersionGenerator = remember { ImmersionGenerator() },
 ) {
-    var currentResult by remember { mutableStateOf<RollResult?>(null) }
-
     val fullImmersionColor = Gold
     val sensoryColor = Info
     val emotionalColor = Mystic
@@ -168,7 +166,8 @@ fun ImmersionDialog(
                 color = fullImmersionColor,
                 isPrimary = true,
                 onClick = {
-                    currentResult = immersionGenerator.generateFullImmersion()
+                    onRoll(immersionGenerator.generateFullImmersion())
+                    onDismiss()
                 },
             )
         }
@@ -217,7 +216,8 @@ fun ImmersionDialog(
                 icon = Icons.Filled.Visibility,
                 color = sensoryColor,
                 onClick = {
-                    currentResult = immersionGenerator.generateSensoryDetail()
+                    onRoll(immersionGenerator.generateSensoryDetail())
+                    onDismiss()
                 },
             )
             Spacer(modifier = Modifier.height(8.dp))
@@ -229,7 +229,8 @@ fun ImmersionDialog(
                     color = Success,
                     modifier = Modifier.weight(1f),
                     onClick = {
-                        currentResult = immersionGenerator.generateSensoryDetail(skew = "advantage")
+                        onRoll(immersionGenerator.generateSensoryDetail(skew = "advantage"))
+                        onDismiss()
                     },
                 )
                 Spacer(modifier = Modifier.width(8.dp))
@@ -240,7 +241,8 @@ fun ImmersionDialog(
                     color = Info,
                     modifier = Modifier.weight(1f),
                     onClick = {
-                        currentResult = immersionGenerator.generateSensoryDetail(skew = "disadvantage")
+                        onRoll(immersionGenerator.generateSensoryDetail(skew = "disadvantage"))
+                        onDismiss()
                     },
                 )
             }
@@ -251,7 +253,8 @@ fun ImmersionDialog(
                 icon = Icons.Filled.RemoveRedEye,
                 color = sensoryColor.copy(alpha = 0.7f),
                 onClick = {
-                    currentResult = immersionGenerator.generateSensoryDetail(senseDie = 6)
+                    onRoll(immersionGenerator.generateSensoryDetail(senseDie = 6))
+                    onDismiss()
                 },
             )
         }
@@ -306,7 +309,8 @@ fun ImmersionDialog(
                 icon = Icons.Filled.Mood,
                 color = emotionalColor,
                 onClick = {
-                    currentResult = immersionGenerator.generateEmotionalAtmosphere()
+                    onRoll(immersionGenerator.generateEmotionalAtmosphere())
+                    onDismiss()
                 },
             )
             Spacer(modifier = Modifier.height(8.dp))
@@ -318,7 +322,8 @@ fun ImmersionDialog(
                     color = Success,
                     modifier = Modifier.weight(1f),
                     onClick = {
-                        currentResult = immersionGenerator.generateEmotionalAtmosphere(skew = "advantage")
+                        onRoll(immersionGenerator.generateEmotionalAtmosphere(skew = "advantage"))
+                        onDismiss()
                     },
                 )
                 Spacer(modifier = Modifier.width(8.dp))
@@ -329,7 +334,8 @@ fun ImmersionDialog(
                     color = Danger,
                     modifier = Modifier.weight(1f),
                     onClick = {
-                        currentResult = immersionGenerator.generateEmotionalAtmosphere(skew = "disadvantage")
+                        onRoll(immersionGenerator.generateEmotionalAtmosphere(skew = "disadvantage"))
+                        onDismiss()
                     },
                 )
             }
@@ -340,7 +346,8 @@ fun ImmersionDialog(
                 icon = Icons.Filled.Star, // Placeholder since EmojiEmotionsOutlined doesn't exist
                 color = emotionalColor.copy(alpha = 0.7f),
                 onClick = {
-                    currentResult = immersionGenerator.generateEmotionalAtmosphere(emotionDie = 6)
+                    onRoll(immersionGenerator.generateEmotionalAtmosphere(emotionDie = 6))
+                    onDismiss()
                 },
             )
         }
@@ -364,31 +371,6 @@ fun ImmersionDialog(
             )
         }
 
-        Spacer(modifier = Modifier.height(14.dp))
-
-        // ── Result Display ──
-        RollResultSection(result = currentResult)
-
-        // ── Save & Close ──
-        if (currentResult != null) {
-            Spacer(modifier = Modifier.height(12.dp))
-            Button(
-                onClick = {
-                    currentResult?.let { onRoll(it) }
-                    onDismiss()
-                },
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Gold.copy(alpha = 0.2f),
-                    contentColor = Gold,
-                ),
-                shape = RoundedCornerShape(8.dp),
-            ) {
-                Text("Save & Close", style = MaterialTheme.typography.labelLarge)
-            }
-        }
-
-        Spacer(modifier = Modifier.height(4.dp))
     }
 }
 

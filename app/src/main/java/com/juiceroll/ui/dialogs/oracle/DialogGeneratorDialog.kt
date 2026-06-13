@@ -62,7 +62,6 @@ fun DialogGeneratorDialog(
     onDismiss: () -> Unit,
     dialogGenerator: DialogGenerator = remember { DialogGenerator() },
 ) {
-    var currentResult by remember { mutableStateOf<RollResult?>(null) }
     var gridState by remember {
         mutableStateOf(DialogGridState(currentRow = 2, currentCol = 2, conversationActive = true))
     }
@@ -77,7 +76,8 @@ fun DialogGeneratorDialog(
     fun rollDialog() {
         val moveResult = dialogGenerator.roll(gridState)
         gridState = moveResult.newState
-        currentResult = moveResult.result
+        onRoll(moveResult.result)
+        onDismiss()
     }
 
     fun startNewConversation() {
@@ -311,31 +311,6 @@ fun DialogGeneratorDialog(
             }
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
-
-        // ── Result Display ──
-        RollResultSection(result = currentResult)
-
-        // ── Save & Close ──
-        if (currentResult != null) {
-            Spacer(modifier = Modifier.height(12.dp))
-            Button(
-                onClick = {
-                    currentResult?.let { onRoll(it) }
-                    onDismiss()
-                },
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Gold.copy(alpha = 0.2f),
-                    contentColor = Gold,
-                ),
-                shape = RoundedCornerShape(8.dp),
-            ) {
-                Text("Save & Close", style = MaterialTheme.typography.labelLarge)
-            }
-        }
-
-        Spacer(modifier = Modifier.height(4.dp))
     }
 }
 

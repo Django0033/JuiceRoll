@@ -91,7 +91,6 @@ fun WildernessDialog(
     challengeGenerator: ChallengeGenerator = remember { ChallengeGenerator() },
 ) {
     // ── Local UI state ──
-    var currentResult by remember { mutableStateOf<RollResult?>(null) }
     var hasDangerousTerrain by remember { mutableStateOf(false) }
     var hasMapOrGuide by remember { mutableStateOf(false) }
     var showEnvironmentPicker by remember { mutableStateOf(false) }
@@ -132,17 +131,14 @@ fun WildernessDialog(
             hasMapOrGuide = hasMapOrGuide,
         )
 
-        // Follow-up rolling happens here if required
-        // For interactive dialogs, we simply pass the result and let the user
-        // decide what to do next via separate buttons
-        currentResult = encounterResult
-
-        // Update wilderness state if the encounter changed it
         if (encounterResult.newState != null) {
             onStateChange(encounterResult.newState)
         } else if (encounterResult.becameLost && wildernessState != null) {
             onStateChange(wildernessState.copy(isLost = true))
         }
+
+        onRoll(encounterResult)
+        onDismiss()
     }
 
     // ── Dialog ──
@@ -170,7 +166,6 @@ fun WildernessDialog(
                 // Reset button
                 Surface(
                     onClick = {
-                        currentResult = null
                         // Reset to uninitialized — send a reset signal by
                         // re-initializing. A null reset would require the ViewModel
                         // to handle it; we just generate a fresh random area.
@@ -212,7 +207,8 @@ fun WildernessDialog(
                     if (result.newState != null) {
                         onStateChange(result.newState)
                     }
-                    currentResult = result
+                    onRoll(result)
+                    onDismiss()
                 },
             )
             Spacer(modifier = Modifier.height(6.dp))
@@ -235,7 +231,8 @@ fun WildernessDialog(
                     if (result.newState != null) {
                         onStateChange(result.newState)
                     }
-                    currentResult = result
+                    onRoll(result)
+                    onDismiss()
                 },
             )
             Spacer(modifier = Modifier.height(6.dp))
@@ -264,7 +261,8 @@ fun WildernessDialog(
                     if (result.newState != null) {
                         onStateChange(result.newState)
                     }
-                    currentResult = result
+                    onRoll(result)
+                    onDismiss()
                 },
             )
         }
@@ -376,10 +374,11 @@ fun WildernessDialog(
                 onClick = {
                     val envRow = wildernessState?.environmentRow ?: 5
                     val typeRow = wildernessState?.typeRow ?: 5
-                    currentResult = generator.rollWeather(
+                    onRoll(generator.rollWeather(
                         environmentRow = envRow,
                         typeRow = typeRow,
-                    )
+                    ))
+                    onDismiss()
                 },
             )
             Spacer(modifier = Modifier.width(6.dp))
@@ -389,7 +388,8 @@ fun WildernessDialog(
                 color = Rust,
                 modifier = Modifier.weight(1f),
                 onClick = {
-                    currentResult = generator.rollNaturalHazard()
+                    onRoll(generator.rollNaturalHazard())
+                    onDismiss()
                 },
             )
             Spacer(modifier = Modifier.width(6.dp))
@@ -399,7 +399,8 @@ fun WildernessDialog(
                 color = Mystic,
                 modifier = Modifier.weight(1f),
                 onClick = {
-                    currentResult = generator.rollFeature()
+                    onRoll(generator.rollFeature())
+                    onDismiss()
                 },
             )
         }
@@ -429,35 +430,11 @@ fun WildernessDialog(
             color = Danger,
             onClick = {
                 val envRow = wildernessState?.environmentRow ?: 5
-                currentResult = generator.rollMonsterLevel(environmentRow = envRow)
+                onRoll(generator.rollMonsterLevel(environmentRow = envRow))
+                onDismiss()
             },
         )
 
-        Spacer(modifier = Modifier.height(14.dp))
-
-        // ── Result Display ──
-        RollResultSection(result = currentResult)
-
-        // ── Save & Close ──
-        if (currentResult != null) {
-            Spacer(modifier = Modifier.height(12.dp))
-            Button(
-                onClick = {
-                    currentResult?.let { onRoll(it) }
-                    onDismiss()
-                },
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Gold.copy(alpha = 0.2f),
-                    contentColor = Gold,
-                ),
-                shape = RoundedCornerShape(8.dp),
-            ) {
-                Text("Save & Close", style = MaterialTheme.typography.labelLarge)
-            }
-        }
-
-        Spacer(modifier = Modifier.height(4.dp))
     }
 }
 

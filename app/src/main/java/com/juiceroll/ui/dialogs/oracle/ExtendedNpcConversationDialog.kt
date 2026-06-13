@@ -74,7 +74,6 @@ fun ExtendedNpcConversationDialog(
     conversationGenerator: ExtendedNpcConversationGenerator =
         remember { ExtendedNpcConversationGenerator() },
 ) {
-    var currentResult by remember { mutableStateOf<RollResult?>(null) }
     var companionSkew by remember { mutableStateOf("none") }
 
     val npcColor = CategoryCharacter
@@ -148,7 +147,8 @@ fun ExtendedNpcConversationDialog(
             icon = Icons.AutoMirrored.Filled.LibraryBooks,
             color = infoColor,
             onClick = {
-                currentResult = conversationGenerator.rollInformation()
+                onRoll(conversationGenerator.rollInformation())
+                onDismiss()
             },
         )
 
@@ -228,7 +228,8 @@ fun ExtendedNpcConversationDialog(
             icon = Icons.AutoMirrored.Filled.Chat,
             color = companionColor,
             onClick = {
-                currentResult = conversationGenerator.rollCompanionResponse(skew = companionSkew)
+                onRoll(conversationGenerator.rollCompanionResponse(skew = companionSkew))
+                onDismiss()
             },
         )
 
@@ -250,7 +251,8 @@ fun ExtendedNpcConversationDialog(
             icon = Icons.Filled.Forum,
             color = topicColor,
             onClick = {
-                currentResult = conversationGenerator.rollDialogTopic()
+                onRoll(conversationGenerator.rollDialogTopic())
+                onDismiss()
             },
         )
 
@@ -322,31 +324,6 @@ fun ExtendedNpcConversationDialog(
             }
         }
 
-        Spacer(modifier = Modifier.height(14.dp))
-
-        // ── Result Display ──
-        RollResultSection(result = currentResult)
-
-        // ── Save & Close ──
-        if (currentResult != null) {
-            Spacer(modifier = Modifier.height(12.dp))
-            Button(
-                onClick = {
-                    currentResult?.let { onRoll(it) }
-                    onDismiss()
-                },
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Gold.copy(alpha = 0.2f),
-                    contentColor = Gold,
-                ),
-                shape = RoundedCornerShape(8.dp),
-            ) {
-                Text("Save & Close", style = MaterialTheme.typography.labelLarge)
-            }
-        }
-
-        Spacer(modifier = Modifier.height(4.dp))
     }
 }
 

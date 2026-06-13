@@ -249,11 +249,6 @@ fun DiceRollDialog(
         }
     }
 
-    fun saveAndClose() {
-        currentResult?.let { onRoll(it) }
-        onDismiss()
-    }
-
     // ═══════════════════════════════════════════════════════════════
     // Layout
     // ═══════════════════════════════════════════════════════════════
@@ -377,9 +372,9 @@ fun DiceRollDialog(
 
                     if (currentResult != null) {
                         Spacer(modifier = Modifier.height(12.dp))
-                        ReRollAndSaveRow(
+                        ReRollAndCloseRow(
                             onReRoll = { doRoll() },
-                            onSave = { saveAndClose() },
+                            onClose = onDismiss,
                             themeColor = themeColor,
                         )
                     }
@@ -391,7 +386,11 @@ fun DiceRollDialog(
                 BottomActionsBar(
                     themeColor = themeColor,
                     onCancel = onDismiss,
-                    onRoll = { doRoll() },
+                    onRoll = {
+                        doRoll()
+                        currentResult?.let { onRoll(it) }
+                        onDismiss()
+                    },
                 )
             }
         }
@@ -1260,11 +1259,11 @@ private fun InfoBox(content: String, color: Color = Info) {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// Re-roll and Save row (shown after a result)
+// Re-roll and Close row (shown after a result)
 // ═══════════════════════════════════════════════════════════════
 
 @Composable
-private fun ReRollAndSaveRow(onReRoll: () -> Unit, onSave: () -> Unit, themeColor: Color) {
+private fun ReRollAndCloseRow(onReRoll: () -> Unit, onClose: () -> Unit, themeColor: Color) {
     Row(Modifier.fillMaxWidth()) {
         Surface(
             onClick = onReRoll,
@@ -1279,13 +1278,18 @@ private fun ReRollAndSaveRow(onReRoll: () -> Unit, onSave: () -> Unit, themeColo
             }
         }
         Spacer(Modifier.width(8.dp))
-        Button(
-            onClick = onSave,
+        Surface(
+            onClick = onClose,
             modifier = Modifier.weight(1f),
-            colors = ButtonDefaults.buttonColors(containerColor = Gold.copy(alpha = 0.2f), contentColor = Gold),
             shape = RoundedCornerShape(8.dp),
+            color = Gold.copy(alpha = 0.15f),
+            border = BorderStroke(1.dp, Gold.copy(alpha = 0.4f)),
+            tonalElevation = 0.dp,
         ) {
-            Text("Save & Close", style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold)
+            Box(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 10.dp)) {
+                Text("Close", style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.Bold, color = Gold)
+            }
         }
     }
 }

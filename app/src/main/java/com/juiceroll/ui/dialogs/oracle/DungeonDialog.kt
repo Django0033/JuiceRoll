@@ -98,8 +98,6 @@ fun DungeonDialog(
     LaunchedEffect(twoPassHasFirstDoubles) { localTwoPassHasFirstDoubles = twoPassHasFirstDoubles }
 
     // ── Internal local state ──
-    var currentResult by remember { mutableStateOf<RollResult?>(null) }
-
     // Passage/Condition settings
     var useD6ForPassage by remember { mutableStateOf(false) }
     var passageConditionSkew by remember { mutableStateOf(SkewType.NONE) }
@@ -203,7 +201,8 @@ fun DungeonDialog(
             subtitle = "[Dungeon] of the [Description] [Subject]",
             color = dungeonColor,
             onClick = {
-                currentResult = generator.generateName()
+                onRoll(generator.generateName())
+                onDismiss()
             },
         )
 
@@ -274,24 +273,22 @@ fun DungeonDialog(
                     val result = generator.generateTwoPassArea(
                         hasFirstDoubles = localTwoPassHasFirstDoubles,
                     )
-                    currentResult = result
 
-                    // Handle doubles transitions
-                    if (result.isSecondDoubles) {
-                        // 2nd DOUBLES - stop map generation
-                    } else if (result.isDoubles && !localTwoPassHasFirstDoubles) {
+                    if (result.isDoubles && !localTwoPassHasFirstDoubles) {
                         setTwoPassFirstDoubles(true)
                     }
+                    onRoll(result)
+                    onDismiss()
                 } else {
                     val result = generator.generateNextArea(
                         isEntering = localIsEntering,
                     )
-                    currentResult = result
 
-                    // Auto-switch phase if doubles while entering
                     if (result.isDoubles && localIsEntering) {
                         setPhase(false)
                     }
+                    onRoll(result)
+                    onDismiss()
                 }
             },
         )
@@ -311,15 +308,14 @@ fun DungeonDialog(
                     val result = generator.generateTwoPassArea(
                         hasFirstDoubles = localTwoPassHasFirstDoubles,
                     )
-                    currentResult = result
 
-                    if (result.isSecondDoubles) {
-                        // 2nd DOUBLES — stop map generation
-                    } else if (result.isDoubles && !localTwoPassHasFirstDoubles) {
+                    if (result.isDoubles && !localTwoPassHasFirstDoubles) {
                         setTwoPassFirstDoubles(true)
                     }
+                    onRoll(result)
+                    onDismiss()
                 } else {
-                    currentResult = generator.generateFullArea(
+                    onRoll(generator.generateFullArea(
                         isEntering = localIsEntering,
                         isOccupied = !useD6ForPassage,
                         conditionSkew = when (passageConditionSkew) {
@@ -327,9 +323,8 @@ fun DungeonDialog(
                             SkewType.DISADVANTAGE -> "disadvantage"
                             else -> "none"
                         },
-                    )
-                    // FullDungeonAreaResult does not carry doubles info;
-                    // use generateNextArea separately if doubles tracking is needed
+                    ))
+                    onDismiss()
                 }
             },
         )
@@ -341,14 +336,15 @@ fun DungeonDialog(
             subtitle = "Manual passage roll (${if (useD6ForPassage) "d6" else "d10"}${getSkewLabel(passageConditionSkew)})",
             color = dungeonColor,
             onClick = {
-                currentResult = generator.generatePassage(
+                onRoll(generator.generatePassage(
                     useD6 = useD6ForPassage,
                     skew = when (passageConditionSkew) {
                         SkewType.ADVANTAGE -> "advantage"
                         SkewType.DISADVANTAGE -> "disadvantage"
                         else -> "none"
                     },
-                )
+                ))
+                onDismiss()
             },
         )
         Spacer(modifier = Modifier.height(4.dp))
@@ -359,14 +355,15 @@ fun DungeonDialog(
             subtitle = "Room state (${if (useD6ForPassage) "d6" else "d10"}${getSkewLabel(passageConditionSkew)})",
             color = dungeonColor,
             onClick = {
-                currentResult = generator.generateCondition(
+                onRoll(generator.generateCondition(
                     useD6 = useD6ForPassage,
                     skew = when (passageConditionSkew) {
                         SkewType.ADVANTAGE -> "advantage"
                         SkewType.DISADVANTAGE -> "disadvantage"
                         else -> "none"
                     },
-                )
+                ))
+                onDismiss()
             },
         )
         Spacer(modifier = Modifier.height(6.dp))
@@ -442,14 +439,15 @@ fun DungeonDialog(
             subtitle = "What do you find? (${if (isLingering) "d6" else "d10"}${getSkewLabel(encounterSkew)})",
             color = encounterColor,
             onClick = {
-                currentResult = generator.rollEncounterType(
+                onRoll(generator.rollEncounterType(
                     isLingering = isLingering,
                     skew = when (encounterSkew) {
                         SkewType.ADVANTAGE -> "advantage"
                         SkewType.DISADVANTAGE -> "disadvantage"
                         else -> "none"
                     },
-                )
+                ))
+                onDismiss()
             },
         )
         Spacer(modifier = Modifier.height(4.dp))
@@ -460,14 +458,15 @@ fun DungeonDialog(
             subtitle = "Type + Monster/Trap/Feature if applicable",
             color = encounterColor,
             onClick = {
-                currentResult = generator.rollFullEncounter(
+                onRoll(generator.rollFullEncounter(
                     isLingering = isLingering,
                     skew = when (encounterSkew) {
                         SkewType.ADVANTAGE -> "advantage"
                         SkewType.DISADVANTAGE -> "disadvantage"
                         else -> "none"
                     },
-                )
+                ))
+                onDismiss()
             },
         )
 
@@ -491,7 +490,8 @@ fun DungeonDialog(
             subtitle = "Descriptor + Ability",
             color = trapColor,
             onClick = {
-                currentResult = generator.rollMonsterDescription()
+                onRoll(generator.rollMonsterDescription())
+                onDismiss()
             },
         )
         Spacer(modifier = Modifier.height(4.dp))
@@ -502,7 +502,8 @@ fun DungeonDialog(
             subtitle = "Action + Subject",
             color = trapColor,
             onClick = {
-                currentResult = generator.rollTrap()
+                onRoll(generator.rollTrap())
+                onDismiss()
             },
         )
         Spacer(modifier = Modifier.height(4.dp))
@@ -513,10 +514,11 @@ fun DungeonDialog(
             subtitle = "Trap + DC (10 min, @+): Pass=Avoid, Fail=Locate",
             color = trapColor,
             onClick = {
-                currentResult = generator.rollTrapProcedure(
+                onRoll(generator.rollTrapProcedure(
                     isSearching = true,
                     dcSkew = "none",
-                )
+                ))
+                onDismiss()
             },
         )
         Spacer(modifier = Modifier.height(4.dp))
@@ -527,10 +529,11 @@ fun DungeonDialog(
             subtitle = "Trap + DC (Passive): Pass=Locate, Fail=Trigger",
             color = trapColor,
             onClick = {
-                currentResult = generator.rollTrapProcedure(
+                onRoll(generator.rollTrapProcedure(
                     isSearching = false,
                     dcSkew = "none",
-                )
+                ))
+                onDismiss()
             },
         )
         Spacer(modifier = Modifier.height(4.dp))
@@ -541,7 +544,8 @@ fun DungeonDialog(
             subtitle = "Library, Mural, Mushrooms, Prison...",
             color = trapColor,
             onClick = {
-                currentResult = generator.rollFeature()
+                onRoll(generator.rollFeature())
+                onDismiss()
             },
         )
         Spacer(modifier = Modifier.height(4.dp))
@@ -552,7 +556,8 @@ fun DungeonDialog(
             subtitle = "d10 on entry, d6 when lingering",
             color = trapColor,
             onClick = {
-                currentResult = generator.rollNaturalHazard(isLingering = isLingering)
+                onRoll(generator.rollNaturalHazard(isLingering = isLingering))
+                onDismiss()
             },
         )
 
@@ -638,31 +643,6 @@ fun DungeonDialog(
             }
         }
 
-        Spacer(modifier = Modifier.height(14.dp))
-
-        // ── Result Display ──
-        RollResultSection(result = currentResult)
-
-        // ── Save & Close ──
-        if (currentResult != null) {
-            Spacer(modifier = Modifier.height(12.dp))
-            Button(
-                onClick = {
-                    currentResult?.let { onRoll(it) }
-                    onDismiss()
-                },
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Gold.copy(alpha = 0.2f),
-                    contentColor = Gold,
-                ),
-                shape = RoundedCornerShape(8.dp),
-            ) {
-                Text("Save & Close", style = MaterialTheme.typography.labelLarge)
-            }
-        }
-
-        Spacer(modifier = Modifier.height(4.dp))
     }
 }
 

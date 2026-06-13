@@ -56,7 +56,6 @@ fun NpcActionDialog(
     onDismiss: () -> Unit,
     npcActionGenerator: NpcActionGenerator = remember { NpcActionGenerator() },
 ) {
-    var currentResult by remember { mutableStateOf<RollResult?>(null) }
     var disposition by remember { mutableStateOf("active") }
     var context by remember { mutableStateOf("active") }
     var focus by remember { mutableStateOf("active") }
@@ -131,9 +130,10 @@ fun NpcActionDialog(
             title = "\u2B50 Complex NPC (Person)",
             subtitle = "Name + 2 Personalities + Need@+ + Motive + Color + Properties",
             onClick = {
-                currentResult = npcActionGenerator.generateComplexNpc(
+                onRoll(npcActionGenerator.generateComplexNpc(
                     needSkew = "complex", includeName = true, dualPersonality = true,
-                )
+                ))
+                onDismiss()
             },
         )
         Spacer(modifier = Modifier.height(4.dp))
@@ -141,9 +141,10 @@ fun NpcActionDialog(
             title = "\u2B50 Complex NPC (Monster)",
             subtitle = "Name + 2 Personalities + Need@- + Motive + Color + Properties",
             onClick = {
-                currentResult = npcActionGenerator.generateComplexNpc(
+                onRoll(npcActionGenerator.generateComplexNpc(
                     needSkew = "primitive", includeName = true, dualPersonality = true,
-                )
+                ))
+                onDismiss()
             },
         )
         Spacer(modifier = Modifier.height(4.dp))
@@ -151,7 +152,8 @@ fun NpcActionDialog(
             title = "Profile Only (No Name)",
             subtitle = "2 Personalities + Need + Motive + Color + Properties",
             onClick = {
-                currentResult = npcActionGenerator.generateProfile(needSkew = needSkew)
+                onRoll(npcActionGenerator.generateProfile(needSkew = needSkew))
+                onDismiss()
             },
         )
 
@@ -167,7 +169,8 @@ fun NpcActionDialog(
             title = "Personality",
             subtitle = "d10 - Roll 2 for primary/secondary traits",
             onClick = {
-                currentResult = npcActionGenerator.rollPersonality()
+                onRoll(npcActionGenerator.rollPersonality())
+                onDismiss()
             },
         )
         Spacer(modifier = Modifier.height(4.dp))
@@ -175,7 +178,8 @@ fun NpcActionDialog(
             title = "Dual Personality",
             subtitle = """2d10 - "Primary, yet Secondary"""",
             onClick = {
-                currentResult = npcActionGenerator.rollDualPersonality()
+                onRoll(npcActionGenerator.rollDualPersonality())
+                onDismiss()
             },
         )
         Spacer(modifier = Modifier.height(4.dp))
@@ -187,7 +191,8 @@ fun NpcActionDialog(
                 else -> ""
             },
             onClick = {
-                currentResult = npcActionGenerator.rollNeed(skew = needSkew)
+                onRoll(npcActionGenerator.rollNeed(skew = needSkew))
+                onDismiss()
             },
         )
         Spacer(modifier = Modifier.height(4.dp))
@@ -195,7 +200,8 @@ fun NpcActionDialog(
             title = "Motive / Topic",
             subtitle = "d10 - Auto-rolls History/Focus tables",
             onClick = {
-                currentResult = npcActionGenerator.rollMotiveWithFollowUp()
+                onRoll(npcActionGenerator.rollMotiveWithFollowUp())
+                onDismiss()
             },
         )
 
@@ -259,9 +265,10 @@ fun NpcActionDialog(
                     + "${if (context == "active") "@+" else "@-"}"
                     + " - $disposition / $context",
             onClick = {
-                currentResult = npcActionGenerator.rollAction(
+                onRoll(npcActionGenerator.rollAction(
                     disposition = disposition, context = context,
-                )
+                ))
+                onDismiss()
             },
         )
 
@@ -323,37 +330,13 @@ fun NpcActionDialog(
                     + "${if (objective == "offensive") "@+" else "@-"}"
                     + " - $focus / $objective",
             onClick = {
-                currentResult = npcActionGenerator.rollCombatAction(
+                onRoll(npcActionGenerator.rollCombatAction(
                     focus = focus, objective = objective,
-                )
+                ))
+                onDismiss()
             },
         )
 
-        Spacer(modifier = Modifier.height(14.dp))
-
-        // ── Result Display ──
-        RollResultSection(result = currentResult)
-
-        // ── Save & Close ──
-        if (currentResult != null) {
-            Spacer(modifier = Modifier.height(12.dp))
-            Button(
-                onClick = {
-                    currentResult?.let { onRoll(it) }
-                    onDismiss()
-                },
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Gold.copy(alpha = 0.2f),
-                    contentColor = Gold,
-                ),
-                shape = RoundedCornerShape(8.dp),
-            ) {
-                Text("Save & Close", style = MaterialTheme.typography.labelLarge)
-            }
-        }
-
-        Spacer(modifier = Modifier.height(4.dp))
     }
 }
 

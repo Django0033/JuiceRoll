@@ -51,8 +51,6 @@ fun FateCheckDialog(
 ) {
     val likelihoods = listOf("Unlikely", "Even Odds", "Likely")
     var selectedLikelihood by remember { mutableStateOf("Even Odds") }
-    var currentResult by remember { mutableStateOf<RollResult?>(null) }
-
     OracleDialog(
         title = "Fate Check",
         icon = Icons.Filled.AutoAwesome,
@@ -142,9 +140,11 @@ fun FateCheckDialog(
         // ── Roll Button ──
         Button(
             onClick = {
-                currentResult = fateCheckGenerator.check(
+                val result = fateCheckGenerator.check(
                     likelihood = selectedLikelihood,
                 )
+                onRoll(result)
+                onDismiss()
             },
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
@@ -154,33 +154,9 @@ fun FateCheckDialog(
             shape = RoundedCornerShape(8.dp),
         ) {
             Text(
-                text = if (currentResult == null) "Roll Fate Check" else "Reroll",
+                text = "Roll Fate Check",
                 style = MaterialTheme.typography.labelLarge,
             )
-        }
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        // ── Result Display ──
-        RollResultSection(result = currentResult)
-
-        // ── Save & Close ──
-        if (currentResult != null) {
-            Spacer(modifier = Modifier.height(12.dp))
-            Button(
-                onClick = {
-                    currentResult?.let { onRoll(it) }
-                    onDismiss()
-                },
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Gold.copy(alpha = 0.2f),
-                    contentColor = Gold,
-                ),
-                shape = RoundedCornerShape(8.dp),
-            ) {
-                Text("Save & Close", style = MaterialTheme.typography.labelLarge)
-            }
         }
 
         Spacer(modifier = Modifier.height(6.dp))

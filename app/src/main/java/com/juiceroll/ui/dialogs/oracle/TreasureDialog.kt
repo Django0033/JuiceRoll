@@ -58,7 +58,6 @@ fun TreasureDialog(
     onDismiss: () -> Unit,
     treasureGenerator: ObjectTreasureGenerator = remember { ObjectTreasureGenerator() },
 ) {
-    var currentResult by remember { mutableStateOf<RollResult?>(null) }
     var includeColor by remember { mutableStateOf(false) }
     val accentColor = Gold
 
@@ -137,9 +136,10 @@ fun TreasureDialog(
         // ── Create Full Item ──
         Surface(
             onClick = {
-                currentResult = treasureGenerator.generateFullItem(
+                onRoll(treasureGenerator.generateFullItem(
                     skew = "none", includeColor = includeColor,
-                )
+                ))
+                onDismiss()
             },
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(10.dp),
@@ -193,7 +193,8 @@ fun TreasureDialog(
             title = "Random Treasure (4d6)",
             subtitle = "Category + Properties",
             onClick = {
-                currentResult = treasureGenerator.generate(skew = "none")
+                onRoll(treasureGenerator.generate(skew = "none"))
+                onDismiss()
             },
         )
 
@@ -224,7 +225,8 @@ fun TreasureDialog(
                 color = Sepia,
                 modifier = Modifier.weight(1f),
                 onClick = {
-                    currentResult = treasureGenerator.generateTrinket()
+                    onRoll(treasureGenerator.generateTrinket())
+                    onDismiss()
                 },
             )
             Spacer(modifier = Modifier.width(6.dp))
@@ -234,7 +236,8 @@ fun TreasureDialog(
                 color = Gold,
                 modifier = Modifier.weight(1f),
                 onClick = {
-                    currentResult = treasureGenerator.generateTreasure()
+                    onRoll(treasureGenerator.generateTreasure())
+                    onDismiss()
                 },
             )
         }
@@ -246,7 +249,8 @@ fun TreasureDialog(
                 color = ParchmentDark,
                 modifier = Modifier.weight(1f),
                 onClick = {
-                    currentResult = treasureGenerator.generateDocument()
+                    onRoll(treasureGenerator.generateDocument())
+                    onDismiss()
                 },
             )
             Spacer(modifier = Modifier.width(6.dp))
@@ -256,7 +260,8 @@ fun TreasureDialog(
                 color = Mystic,
                 modifier = Modifier.weight(1f),
                 onClick = {
-                    currentResult = treasureGenerator.generateAccessory()
+                    onRoll(treasureGenerator.generateAccessory())
+                    onDismiss()
                 },
             )
         }
@@ -268,7 +273,8 @@ fun TreasureDialog(
                 color = Danger,
                 modifier = Modifier.weight(1f),
                 onClick = {
-                    currentResult = treasureGenerator.generateWeapon()
+                    onRoll(treasureGenerator.generateWeapon())
+                    onDismiss()
                 },
             )
             Spacer(modifier = Modifier.width(6.dp))
@@ -278,36 +284,12 @@ fun TreasureDialog(
                 color = Info,
                 modifier = Modifier.weight(1f),
                 onClick = {
-                    currentResult = treasureGenerator.generateArmor()
+                    onRoll(treasureGenerator.generateArmor())
+                    onDismiss()
                 },
             )
         }
 
-        Spacer(modifier = Modifier.height(14.dp))
-
-        // ── Result Display ──
-        RollResultSection(result = currentResult)
-
-        // ── Save & Close ──
-        if (currentResult != null) {
-            Spacer(modifier = Modifier.height(12.dp))
-            Button(
-                onClick = {
-                    currentResult?.let { onRoll(it) }
-                    onDismiss()
-                },
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Gold.copy(alpha = 0.2f),
-                    contentColor = Gold,
-                ),
-                shape = RoundedCornerShape(8.dp),
-            ) {
-                Text("Save & Close", style = MaterialTheme.typography.labelLarge)
-            }
-        }
-
-        Spacer(modifier = Modifier.height(4.dp))
     }
 }
 

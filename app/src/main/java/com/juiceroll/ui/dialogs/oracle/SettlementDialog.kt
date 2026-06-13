@@ -56,7 +56,6 @@ fun SettlementDialog(
     onDismiss: () -> Unit,
     settlementGenerator: SettlementGenerator = remember { SettlementGenerator() },
 ) {
-    var currentResult by remember { mutableStateOf<RollResult?>(null) }
     val accentColor = CategoryWorld
 
     OracleDialog(
@@ -97,7 +96,8 @@ fun SettlementDialog(
                 color = Sepia,
                 modifier = Modifier.weight(1f),
                 onClick = {
-                    currentResult = settlementGenerator.generateVillage()
+                    onRoll(settlementGenerator.generateVillage())
+                    onDismiss()
                 },
             )
             Spacer(modifier = Modifier.width(8.dp))
@@ -108,7 +108,8 @@ fun SettlementDialog(
                 color = Gold,
                 modifier = Modifier.weight(1f),
                 onClick = {
-                    currentResult = settlementGenerator.generateCity()
+                    onRoll(settlementGenerator.generateCity())
+                    onDismiss()
                 },
             )
         }
@@ -121,37 +122,41 @@ fun SettlementDialog(
         SectionHeader(title = "Individual Rolls")
         Spacer(modifier = Modifier.height(6.dp))
 
-        SettlementOption(
-            title = "Name (2d10)",
-            subtitle = "Also usable for NPC last names",
-            onClick = {
-                currentResult = settlementGenerator.generateName()
-            },
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        SettlementOption(
-            title = "Establishment (d6)",
-            subtitle = "Village: Stable, Tavern, Inn, Entertainment, General Store, Artisan",
-            onClick = {
-                currentResult = settlementGenerator.rollEstablishment(isVillage = true)
-            },
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        SettlementOption(
-            title = "Establishment (d10)",
-            subtitle = "City: +Courier, Temple, Guild Hall, Magic Shop",
-            onClick = {
-                currentResult = settlementGenerator.rollEstablishment(isVillage = false)
-            },
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        SettlementOption(
-            title = "Artisan (d10)",
-            subtitle = "Artist, Baker, Tailor, Tanner, Archer, Blacksmith, Carpenter, Apothecary, Jeweler, Scribe",
-            onClick = {
-                currentResult = settlementGenerator.rollEstablishment(isVillage = true)
-            },
-        )
+            SettlementOption(
+                title = "Name (2d10)",
+                subtitle = "Also usable for NPC last names",
+                onClick = {
+                    onRoll(settlementGenerator.generateName())
+                    onDismiss()
+                },
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            SettlementOption(
+                title = "Establishment (d6)",
+                subtitle = "Village: Stable, Tavern, Inn, Entertainment, General Store, Artisan",
+                onClick = {
+                    onRoll(settlementGenerator.rollEstablishment(isVillage = true))
+                    onDismiss()
+                },
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            SettlementOption(
+                title = "Establishment (d10)",
+                subtitle = "City: +Courier, Temple, Guild Hall, Magic Shop",
+                onClick = {
+                    onRoll(settlementGenerator.rollEstablishment(isVillage = false))
+                    onDismiss()
+                },
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            SettlementOption(
+                title = "Artisan (d10)",
+                subtitle = "Artist, Baker, Tailor, Tanner, Archer, Blacksmith, Carpenter, Apothecary, Jeweler, Scribe",
+                onClick = {
+                    onRoll(settlementGenerator.rollEstablishment(isVillage = true))
+                    onDismiss()
+                },
+            )
 
         Spacer(modifier = Modifier.height(14.dp))
 
@@ -186,7 +191,8 @@ fun SettlementDialog(
             title = "Establishment Name",
             subtitle = """Color + Object → "The [Color] [Object]"""",
             onClick = {
-                currentResult = settlementGenerator.generateEstablishmentName()
+                onRoll(settlementGenerator.generateEstablishmentName())
+                onDismiss()
             },
         )
         Spacer(modifier = Modifier.height(4.dp))
@@ -194,7 +200,8 @@ fun SettlementDialog(
             title = "Settlement Properties",
             subtitle = "Two properties with intensity (e.g., \"Major Style\" + \"Minimal Weight\")",
             onClick = {
-                currentResult = settlementGenerator.generateProperties()
+                onRoll(settlementGenerator.generateProperties())
+                onDismiss()
             },
         )
         Spacer(modifier = Modifier.height(4.dp))
@@ -202,7 +209,8 @@ fun SettlementDialog(
             title = "Simple NPC",
             subtitle = "Name + Personality + Need + Motive (for establishment owners)",
             onClick = {
-                currentResult = settlementGenerator.generateSimpleNpc()
+                onRoll(settlementGenerator.generateSimpleNpc())
+                onDismiss()
             },
         )
 
@@ -236,35 +244,10 @@ fun SettlementDialog(
             subtitle = "War, Sickness, Disaster, Crime, Succession, Remote Event, "
                     + "Arrival, Mail, Sale, Celebration",
             onClick = {
-                currentResult = settlementGenerator.rollNews()
+                onRoll(settlementGenerator.rollNews())
+                onDismiss()
             },
         )
-
-        Spacer(modifier = Modifier.height(14.dp))
-
-        // ── Result Display ──
-        RollResultSection(result = currentResult)
-
-        // ── Save & Close ──
-        if (currentResult != null) {
-            Spacer(modifier = Modifier.height(12.dp))
-            Button(
-                onClick = {
-                    currentResult?.let { onRoll(it) }
-                    onDismiss()
-                },
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Gold.copy(alpha = 0.2f),
-                    contentColor = Gold,
-                ),
-                shape = RoundedCornerShape(8.dp),
-            ) {
-                Text("Save & Close", style = MaterialTheme.typography.labelLarge)
-            }
-        }
-
-        Spacer(modifier = Modifier.height(4.dp))
     }
 }
 

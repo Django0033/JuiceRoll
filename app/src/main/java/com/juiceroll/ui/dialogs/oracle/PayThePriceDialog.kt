@@ -45,8 +45,6 @@ fun PayThePriceDialog(
     onDismiss: () -> Unit,
     payThePriceGenerator: PayThePriceGenerator = remember { PayThePriceGenerator() },
 ) {
-    var currentResult by remember { mutableStateOf<RollResult?>(null) }
-
     SimpleOracleDialog(
         title = "Pay the Price",
         onDismissRequest = onDismiss,
@@ -72,7 +70,8 @@ fun PayThePriceDialog(
         // ── Pay The Price button ──
         Surface(
             onClick = {
-                currentResult = payThePriceGenerator.rollConsequence()
+                onRoll(payThePriceGenerator.rollConsequence())
+                onDismiss()
             },
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(8.dp),
@@ -158,7 +157,8 @@ fun PayThePriceDialog(
 
         Surface(
             onClick = {
-                currentResult = payThePriceGenerator.rollMajorTwist()
+                onRoll(payThePriceGenerator.rollMajorTwist())
+                onDismiss()
             },
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(8.dp),
@@ -218,31 +218,6 @@ fun PayThePriceDialog(
             }
         }
 
-        Spacer(modifier = Modifier.height(14.dp))
-
-        // ── Result Display ──
-        RollResultSection(result = currentResult)
-
-        // ── Save & Close ──
-        if (currentResult != null) {
-            Spacer(modifier = Modifier.height(12.dp))
-            Button(
-                onClick = {
-                    currentResult?.let { onRoll(it) }
-                    onDismiss()
-                },
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Gold.copy(alpha = 0.2f),
-                    contentColor = Gold,
-                ),
-                shape = RoundedCornerShape(8.dp),
-            ) {
-                Text("Save & Close", style = MaterialTheme.typography.labelLarge)
-            }
-        }
-
-        Spacer(modifier = Modifier.height(4.dp))
     }
 }
 

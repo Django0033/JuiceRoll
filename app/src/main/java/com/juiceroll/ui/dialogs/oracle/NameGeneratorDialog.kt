@@ -50,8 +50,6 @@ fun NameGeneratorDialog(
     onDismiss: () -> Unit,
     nameGenerator: NameGenerator = remember { NameGenerator() },
 ) {
-    var currentResult by remember { mutableStateOf<RollResult?>(null) }
-
     SimpleOracleDialog(
         title = "Name Generator",
         onDismissRequest = onDismiss,
@@ -71,7 +69,8 @@ fun NameGeneratorDialog(
             subtitle = "Roll on all three columns",
             modifier = Modifier.fillMaxWidth(),
             onClick = {
-                currentResult = nameGenerator.generate()
+                onRoll(nameGenerator.generate())
+                onDismiss()
             },
         )
         Spacer(modifier = Modifier.height(4.dp))
@@ -80,7 +79,8 @@ fun NameGeneratorDialog(
             subtitle = "Roll on column 1 three times",
             modifier = Modifier.fillMaxWidth(),
             onClick = {
-                currentResult = nameGenerator.generateColumn1Only()
+                onRoll(nameGenerator.generateColumn1Only())
+                onDismiss()
             },
         )
 
@@ -101,7 +101,8 @@ fun NameGeneratorDialog(
             subtitle = "Roll 1d20 for pattern",
             modifier = Modifier.fillMaxWidth(),
             onClick = {
-                currentResult = nameGenerator.generatePatternNeutral()
+                onRoll(nameGenerator.generatePatternNeutral())
+                onDismiss()
             },
         )
         Spacer(modifier = Modifier.height(4.dp))
@@ -113,7 +114,8 @@ fun NameGeneratorDialog(
                 subtitle = "@- (disadvantage)",
                 modifier = Modifier.weight(1f),
                 onClick = {
-                    currentResult = nameGenerator.generateMasculine()
+                    onRoll(nameGenerator.generateMasculine())
+                    onDismiss()
                 },
             )
             Spacer(modifier = Modifier.width(6.dp))
@@ -122,7 +124,8 @@ fun NameGeneratorDialog(
                 subtitle = "@+ (advantage)",
                 modifier = Modifier.weight(1f),
                 onClick = {
-                    currentResult = nameGenerator.generateFeminine()
+                    onRoll(nameGenerator.generateFeminine())
+                    onDismiss()
                 },
             )
         }
@@ -157,31 +160,6 @@ fun NameGeneratorDialog(
             }
         }
 
-        Spacer(modifier = Modifier.height(14.dp))
-
-        // ── Result Display ──
-        RollResultSection(result = currentResult)
-
-        // ── Save & Close ──
-        if (currentResult != null) {
-            Spacer(modifier = Modifier.height(12.dp))
-            Button(
-                onClick = {
-                    currentResult?.let { onRoll(it) }
-                    onDismiss()
-                },
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Gold.copy(alpha = 0.2f),
-                    contentColor = Gold,
-                ),
-                shape = RoundedCornerShape(8.dp),
-            ) {
-                Text("Save & Close", style = MaterialTheme.typography.labelLarge)
-            }
-        }
-
-        Spacer(modifier = Modifier.height(4.dp))
     }
 }
 

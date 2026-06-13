@@ -56,7 +56,6 @@ fun AbstractIconsDialog(
     onDismiss: () -> Unit,
     abstractIconsGenerator: AbstractIconsGenerator = remember { AbstractIconsGenerator() },
 ) {
-    var currentResult by remember { mutableStateOf<RollResult?>(null) }
     val accentColor = Success
 
     OracleDialog(
@@ -196,7 +195,8 @@ fun AbstractIconsDialog(
         // ── Roll Button ──
         Surface(
             onClick = {
-                currentResult = abstractIconsGenerator.generate()
+                onRoll(abstractIconsGenerator.generate())
+                onDismiss()
             },
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
@@ -229,31 +229,6 @@ fun AbstractIconsDialog(
             textAlign = TextAlign.Center,
         )
 
-        Spacer(modifier = Modifier.height(14.dp))
-
-        // ── Result Display ──
-        RollResultSection(result = currentResult)
-
-        // ── Save & Close ──
-        if (currentResult != null) {
-            Spacer(modifier = Modifier.height(12.dp))
-            Button(
-                onClick = {
-                    currentResult?.let { onRoll(it) }
-                    onDismiss()
-                },
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Gold.copy(alpha = 0.2f),
-                    contentColor = Gold,
-                ),
-                shape = RoundedCornerShape(8.dp),
-            ) {
-                Text("Save & Close", style = MaterialTheme.typography.labelLarge)
-            }
-        }
-
-        Spacer(modifier = Modifier.height(4.dp))
     }
 }
 
